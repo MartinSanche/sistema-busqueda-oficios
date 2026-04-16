@@ -18,13 +18,13 @@ Aplicación web para conectar personas con profesionales de oficios en su área.
 ## 🚀 Cómo ejecutar el proyecto
 
 ### 1. Clonar el repositorio
-git clone https://github.com/USUARIO/sistema-busqueda-oficios.git
+git clone https://github.com/MartinSanche/sistema-busqueda-oficios.git
 cd sistema-busqueda-oficios
 
 ### 2. Crear y activar entorno virtual
-python -m venv venv
-source venv/bin/activate  # Mac/Linux
-venv\Scripts\activate     # Windows
+- python -m venv venv
+- source venv/bin/activate  # Mac/Linux
+- venv\Scripts\activate     # Windows
 
 ### 3. Instalar dependencias
 pip install -r requirements.txt
