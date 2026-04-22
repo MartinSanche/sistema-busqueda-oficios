@@ -12,29 +12,73 @@ Aplicación web para conectar personas con profesionales de oficios en su área.
 ## 🛠️ Tecnologías
 - Python 3.11+
 - Flask
+- Flask-SQLAlchemy
+- Flask-Migrate
 - SQLite → PostgreSQL
 - HTML, CSS, JavaScript
 
 ## 🚀 Cómo ejecutar el proyecto
 
 ### 1. Clonar el repositorio
-- git clone https://github.com/MartinSanche/sistema-busqueda-oficios.git
-- cd sistema-busqueda-oficios
+git clone https://github.com/MartinSanche/sistema-busqueda-oficios.git
+cd sistema-busqueda-oficios
 
 ### 2. Crear y activar entorno virtual
-- python -m venv venv
-- source venv/bin/activate  # Mac/Linux
-- venv\Scripts\activate     # Windows
+python -m venv venv
+source venv/Scripts/activate  # Git Bash Windows
+source venv/bin/activate      # Mac/Linux
 
 ### 3. Instalar dependencias
 pip install -r requirements.txt
 
 ### 4. Configurar variables de entorno
-- cp .env.example .env
+cp .env.example .env
 
-### 5. Ejecutar la aplicación
-- python run.py
+### 5. Inicializar la base de datos
+flask db upgrade
+python poblar_db.py
+
+### 6. Ejecutar la aplicación
+python run.py
+
+## 🔗 Rutas disponibles
+
+### Páginas
+| Ruta | Descripción |
+|------|-------------|
+| `/` | Página principal |
+
+### API
+| Ruta | Descripción |
+|------|-------------|
+| `/api/status` | Estado de la API |
+| `/api/oficios` | Lista todos los oficios |
+| `/api/profesionales` | Lista todos los profesionales |
+| `/api/buscar?oficio=X&ubicacion=Y` | Busca profesionales |
 
 ## 📅 Estado del proyecto
 - [x] Etapa 1: Configuración del entorno
-- [ ] Etapa 2: Backend básico
+- [x] Etapa 2: Backend básico con Flask
+- [x] Etapa 3: Base de datos con SQLAlchemy
+- [ ] Etapa 4: Frontend básico
+- [ ] Etapa 5: Integración frontend-backend
+- [ ] Etapa 6: Funcionalidades principales
+- [ ] Etapa 7: Autenticación
+- [ ] Etapa 8: Mejora de UI/UX
+- [ ] Etapa 9: Deploy
+
+## 📁 Estructura del proyecto
+sistema-busqueda-oficios/
+├── app/
+│   ├── templates/       ← Archivos HTML
+│   ├── static/          ← CSS, JS, imágenes
+│   ├── __init__.py      ← Inicializa Flask y DB
+│   ├── models.py        ← Modelos de base de datos
+│   └── routes.py        ← Rutas y API
+├── migrations/          ← Migraciones de la DB
+├── docs/                ← Documentación
+├── tests/               ← Pruebas
+├── config.py            ← Configuración
+├── run.py               ← Punto de entrada
+├── poblar_db.py         ← Script de datos de prueba
+└── requirements.txt     ← Dependencias
