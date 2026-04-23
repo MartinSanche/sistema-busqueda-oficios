@@ -19,27 +19,29 @@ Aplicación web para conectar personas con profesionales de oficios en su área.
 
 ## 🚀 Cómo ejecutar el proyecto
 
+Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el repositorio y seguir los comandos siguentes.
+
 ### 1. Clonar el repositorio
-git clone https://github.com/MartinSanche/sistema-busqueda-oficios.git
-cd sistema-busqueda-oficios
+- git clone https://github.com/MartinSanche/sistema-busqueda-oficios.git
 
 ### 2. Crear y activar entorno virtual
+- cd sistema-busqueda-oficios
 - python -m venv venv
 - source venv/Scripts/activate  # Git Bash Windows
 - source venv/bin/activate      # Mac/Linux
 
 ### 3. Instalar dependencias
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
 ### 4. Configurar variables de entorno
-cp .env.example .env
+- cp .env.example .env
 
 ### 5. Inicializar la base de datos
-flask db upgrade
-python poblar_db.py
+- flask db upgrade
+- python poblar_db.py
 
 ### 6. Ejecutar la aplicación
-python run.py
+- python run.py
 
 ## 🔗 Rutas disponibles
 
