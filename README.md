@@ -62,7 +62,7 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 - [x] Etapa 1: Configuración del entorno
 - [x] Etapa 2: Backend básico con Flask
 - [x] Etapa 3: Base de datos con SQLAlchemy
-- [ ] Etapa 4: Frontend básico
+- [x] Etapa 4: Frontend básico
 - [ ] Etapa 5: Integración frontend-backend
 - [ ] Etapa 6: Funcionalidades principales
 - [ ] Etapa 7: Autenticación
