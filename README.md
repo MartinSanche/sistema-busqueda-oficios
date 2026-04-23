@@ -25,7 +25,7 @@ cd sistema-busqueda-oficios
 
 ### 2. Crear y activar entorno virtual
 python -m venv venv
-source venv/Scripts/activate  # Git Bash Windows
+source venv/Scripts/activate  # Git Bash Windows  o source venv/Scripts/activate
 source venv/bin/activate      # Mac/Linux
 
 ### 3. Instalar dependencias
