@@ -23,12 +23,19 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
 <script>
-    // Cargar oficios desde la API
-    fetch('/api/oficios')
-        .then(res => res.json())
-        .then(data => {
+    async function cargarOficios() {
+        mostrarLoading('oficios-grid', 'Cargando oficios...')
+        try {
+            const data = await API.getOficios()
             const grid = document.getElementById('oficios-grid')
+            
+            if (data.oficios.length === 0) {
+                mostrarVacio('oficios-grid', 'No hay oficios disponibles')
+                return
+            }
+
             grid.innerHTML = ''
             data.oficios.forEach(oficio => {
                 grid.innerHTML += `
@@ -36,13 +43,18 @@
                         <div class="card-icon">${oficio.icono}</div>
                         <h3>${oficio.nombre}</h3>
                         <p>${oficio.descripcion}</p>
-                        <a href="/buscar?oficio=${oficio.nombre}" class="btn btn-secondary">
+                        <a href="/buscar?oficio=${oficio.nombre}" 
+                           class="btn btn-secondary">
                             Ver profesionales
                         </a>
                     </div>
                 `
             })
-        })
-        .catch(err => console.error('Error cargando oficios:', err))
+        } catch (error) {
+            mostrarError('oficios-grid', 'No se pudieron cargar los oficios')
+        }
+    }
+
+    cargarOficios()
 </script>
 {% endblock %}
