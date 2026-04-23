@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Buscar — Búsqueda de Oficios{% endblock %}
+
+{% block content %}
+
+<section class="section">
+    <h2>🔍 Buscar profesionales</h2>
+
+    <!-- FORMULARIO DE BÚSQUEDA -->
+    <div class="search-box">
+        <div class="search-fields">
+            <div class="field">
+                <label for="oficio">Oficio</label>
+                <input
+                    type="text"
+                    id="oficio"
+                    placeholder="Ej: Plomero, Electricista..."
+                >
+            </div>
+            <div class="field">
+                <label for="ubicacion">Ubicación</label>
+                <input
+                    type="text"
+                    id="ubicacion"
+                    placeholder="Ej: Buenos Aires, Córdoba..."
+                >
+            </div>
+            <button class="btn btn-primary" onclick="buscar()">
+                🔍 Buscar
+            </button>
+        </div>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div id="resultados" class="resultados">
+        <p class="hint">Ingresá un oficio o ubicación para buscar profesionales</p>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Leer parámetros de la URL al cargar la página
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search)
+        const oficio = params.get('oficio')
+        if (oficio) {
+            document.getElementById('oficio').value = oficio
+            buscar()
+        }
+    }
+
+    function buscar() {
+        const oficio    = document.getElementById('oficio').value
+        const ubicacion = document.getElementById('ubicacion').value
+
+        if (!oficio && !ubicacion) {
+            document.getElementById('resultados').innerHTML =
+                '<p class="hint">Ingresá al menos un criterio de búsqueda</p>'
+            return
+        }
+
+        // Mostrar loading
+        document.getElementById('resultados').innerHTML =
+            '<p class="loading">Buscando...</p>'
+
+        // Llamar a la API
+        fetch(`/api/buscar?oficio=${oficio}&ubicacion=${ubicacion}`)
+            .then(res => res.json())
+            .then(data => mostrarResultados(data))
+            .catch(err => console.error('Error:', err))
+    }
+
+    function mostrarResultados(data) {
+        const div = document.getElementById('resultados')
+
+        if (data.total === 0) {
+            div.innerHTML = '<p class="hint">No se encontraron profesionales</p>'
+            return
+        }
+
+        div.innerHTML = `<p class="total">Se encontraron <strong>${data.total}</strong> profesionales</p>`
+
+        data.resultados.forEach(p => {
+            div.innerHTML += `
+                <div class="card-profesional">
+                    <div class="prof-header">
+                        <h3>${p.nombre}</h3>
+                        <span class="badge">${p.oficio}</span>
+                    </div>
+                    <p>${p.descripcion || 'Sin descripción'}</p>
+                    <div class="prof-info">
+                        <span>📍 ${p.ubicacion}</span>
+                        <span>⏱ ${p.experiencia_anios} años de experiencia</span>
+                        <span>📞 ${p.telefono || 'Sin teléfono'}</span>
+                    </div>
+                </div>
+            `
+        })
+    }
+</script>
+{% endblock %}

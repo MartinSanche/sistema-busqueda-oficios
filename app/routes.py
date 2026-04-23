@@ -65,3 +65,8 @@ def buscar():
         'resultados': [p.to_dict() for p in resultados],
         'total':      len(resultados)
     })
+
+@main.route('/buscar')
+def buscar_page():
+    """Página de búsqueda."""
+    return render_template('buscar.html')
