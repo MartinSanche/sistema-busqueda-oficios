@@ -19,7 +19,7 @@ Aplicación web para conectar personas con profesionales de oficios en su área.
 
 ## 🚀 Cómo ejecutar el proyecto
 
-Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el repositorio y seguir los comandos siguentes.
+Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el repositorio y seguir los siguientes comandos.
 
 ### 1. Clonar el repositorio
 - git clone https://github.com/MartinSanche/sistema-busqueda-oficios.git
