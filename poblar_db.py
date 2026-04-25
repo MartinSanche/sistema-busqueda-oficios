@@ -13,7 +13,7 @@ with app.app_context():
     oficios = [
         Oficio(nombre='Plomero',      descripcion='Instalaciones y reparaciones de agua', icono='🔧'),
         Oficio(nombre='Electricista', descripcion='Instalaciones eléctricas',              icono='⚡'),
-        Oficio(nombre='Carpintero',   descripcion='Trabajos en madera y muebles',          icono='🪚'),
+        Oficio(nombre='Carpintero',   descripcion='Trabajos en madera y muebles',          icono='🔨'),
         Oficio(nombre='Pintor',       descripcion='Pintura de interiores y exteriores',    icono='🎨'),
         Oficio(nombre='Albañil',      descripcion='Construcción y reparaciones',           icono='🧱'),
     ]
