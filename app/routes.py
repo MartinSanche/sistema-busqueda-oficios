@@ -70,3 +70,15 @@ def buscar():
 def buscar_page():
     """Página de búsqueda."""
     return render_template('buscar.html')
+
+@main.route('/api/profesional/<int:id>')
+def obtener_profesional(id):
+    """Obtiene el detalle de un profesional por ID."""
+    profesional = Profesional.query.get_or_404(id)
+    return jsonify(profesional.to_dict())
+
+
+@main.route('/profesional/<int:id>')
+def detalle_profesional(id):
+    """Página de detalle de un profesional."""
+    return render_template('detalle.html', profesional_id=id)

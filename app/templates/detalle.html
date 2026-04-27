@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil del Profesional{% endblock %}
+
+{% block content %}
+<section class="section">
+    <a href="/buscar" class="btn btn-secondary" 
+       style="margin-bottom: 24px; display: inline-block">
+        ← Volver a búsqueda
+    </a>
+
+    <div id="detalle-container">
+        <p class="loading">⏳ Cargando perfil...</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script>
+    const profesionalId = {{ profesional_id }}
+
+    async function cargarDetalle() {
+        try {
+            const p = await API.getProfesional(profesionalId)
+            document.getElementById('detalle-container').innerHTML = `
+                <div class="card-profesional">
+                    <div class="prof-header">
+                        <h2>${p.nombre}</h2>
+                        <span class="badge">${p.oficio}</span>
+                    </div>
+
+                    <p style="margin: 16px 0; font-size: 1.05rem">
+                        ${p.descripcion || 'Sin descripción'}
+                    </p>
+
+                    <div class="prof-info" style="font-size: 1rem">
+                        <span>📍 ${p.ubicacion}</span>
+                        <span>⏱ ${p.experiencia_anios} años de experiencia</span>
+                    </div>
+
+                    <div style="margin-top: 24px; padding-top: 24px; 
+                                border-top: 1px solid #eee">
+                        <h3 style="margin-bottom: 12px">Contacto</h3>
+                        <p>📞 ${p.telefono || 'No disponible'}</p>
+                    </div>
+
+                    <div style="margin-top: 16px">
+                        <span class="${p.disponible ? 'badge' : 'badge badge-inactive'}">
+                            ${p.disponible ? '✅ Disponible' : '❌ No disponible'}
+                        </span>
+                    </div>
+                </div>
+            `
+        } catch (error) {
+            mostrarError('detalle-container', 'No se encontró el profesional')
+        }
+    }
+
+    cargarDetalle()
+</script>
+{% endblock %}
