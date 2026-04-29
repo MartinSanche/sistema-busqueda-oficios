@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 
 {% block title %}Buscar — Búsqueda de Oficios{% endblock %}
@@ -40,9 +41,11 @@
 
 {% endblock %}
 
+=======
+>>>>>>> c8ec338 (Mejorar HTML)
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
 <script>
-    // Leer parámetros de la URL al cargar la página
     window.onload = function() {
         const params = new URLSearchParams(window.location.search)
         const oficio = params.get('oficio')
@@ -52,41 +55,44 @@
         }
     }
 
-    function buscar() {
-        const oficio    = document.getElementById('oficio').value
-        const ubicacion = document.getElementById('ubicacion').value
+    async function buscar() {
+        const oficio    = document.getElementById('oficio').value.trim()
+        const ubicacion = document.getElementById('ubicacion').value.trim()
 
         if (!oficio && !ubicacion) {
-            document.getElementById('resultados').innerHTML =
-                '<p class="hint">Ingresá al menos un criterio de búsqueda</p>'
+            mostrarVacio('resultados', 'Ingresá al menos un criterio de búsqueda')
             return
         }
 
-        // Mostrar loading
-        document.getElementById('resultados').innerHTML =
-            '<p class="loading">Buscando...</p>'
+        mostrarLoading('resultados', 'Buscando profesionales...')
 
-        // Llamar a la API
-        fetch(`/api/buscar?oficio=${oficio}&ubicacion=${ubicacion}`)
-            .then(res => res.json())
-            .then(data => mostrarResultados(data))
-            .catch(err => console.error('Error:', err))
+        try {
+            const data = await API.buscar(oficio, ubicacion)
+            mostrarResultados(data)
+        } catch (error) {
+            mostrarError('resultados', 'Error al buscar. Intentá de nuevo.')
+        }
     }
 
     function mostrarResultados(data) {
         const div = document.getElementById('resultados')
 
         if (data.total === 0) {
-            div.innerHTML = '<p class="hint">No se encontraron profesionales</p>'
+            mostrarVacio('resultados', '😕 No se encontraron profesionales con esos criterios')
             return
         }
 
-        div.innerHTML = `<p class="total">Se encontraron <strong>${data.total}</strong> profesionales</p>`
+        div.innerHTML = `
+            <p class="total">
+                Se encontraron <strong>${data.total}</strong> profesionales
+            </p>
+        `
 
 
         data.resultados.forEach(p => {
             div.innerHTML += `
                 <div class="card-profesional">
+<<<<<<< HEAD
                 <div class="prof-header">
                     <h3>${p.nombre}</h3>
                     <span class="badge">${p.oficio}</span>
@@ -134,5 +140,36 @@
         alert('Error al enviar el mensaje')
     }
 }   
+=======
+                    <div class="prof-header">
+                        <h3>${p.nombre}</h3>
+                        <span class="badge">${p.oficio}</span>
+                    </div>
+                    <p>${p.descripcion || 'Sin descripción'}</p>
+                    <div class="prof-info">
+                        <span>📍 ${p.ubicacion}</span>
+                        <span>⏱ ${p.experiencia_anios} años de experiencia</span>
+                        <span>📞 ${p.telefono || 'Sin teléfono'}</span>
+                    </div>
+                    <div style="margin-top: 12px">
+                        <a href="/profesional/${p.id}" class="btn btn-secondary">
+                            Ver perfil completo
+                        </a>
+                    </div>
+                </div>
+            `
+        })
+    }
+
+    // Buscar al presionar Enter
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('oficio').addEventListener('keypress', e => {
+            if (e.key === 'Enter') buscar()
+        })
+        document.getElementById('ubicacion').addEventListener('keypress', e => {
+            if (e.key === 'Enter') buscar()
+        })
+    })
+>>>>>>> c8ec338 (Mejorar HTML)
 </script>
 {% endblock %}
