@@ -1,3 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Buscar — Búsqueda de Oficios{% endblock %}
+
+{% block content %}
+
+<section class="section">
+    <h2>🔍 Buscar profesionales</h2>
+
+    <!-- FORMULARIO DE BÚSQUEDA -->
+    <div class="search-box">
+        <div class="search-fields">
+            <div class="field">
+                <label for="oficio">Oficio</label>
+                <input
+                    type="text"
+                    id="oficio"
+                    placeholder="Ej: Plomero, Electricista..."
+                >
+            </div>
+            <div class="field">
+                <label for="ubicacion">Ubicación</label>
+                <input
+                    type="text"
+                    id="ubicacion"
+                    placeholder="Ej: Buenos Aires, Córdoba..."
+                >
+            </div>
+            <button class="btn btn-primary" onclick="buscar()">
+                🔍 Buscar
+            </button>
+        </div>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div id="resultados" class="resultados">
+        <p class="hint">Ingresá un oficio o ubicación para buscar profesionales</p>
+    </div>
+</section>
+
+{% endblock %}
+
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/api.js') }}"></script>
 <script>
