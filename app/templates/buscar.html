@@ -83,22 +83,56 @@
 
         div.innerHTML = `<p class="total">Se encontraron <strong>${data.total}</strong> profesionales</p>`
 
+
         data.resultados.forEach(p => {
             div.innerHTML += `
                 <div class="card-profesional">
-                    <div class="prof-header">
-                        <h3>${p.nombre}</h3>
-                        <span class="badge">${p.oficio}</span>
-                    </div>
-                    <p>${p.descripcion || 'Sin descripción'}</p>
-                    <div class="prof-info">
-                        <span>📍 ${p.ubicacion}</span>
-                        <span>⏱ ${p.experiencia_anios} años de experiencia</span>
-                        <span>📞 ${p.telefono || 'Sin teléfono'}</span>
-                    </div>
-                </div>
-            `
-        })
+                <div class="prof-header">
+                    <h3>${p.nombre}</h3>
+                    <span class="badge">${p.oficio}</span>
+            </div>
+            <p>${p.descripcion || 'Sin descripción'}</p>
+            <div class="prof-info">
+                <span>📍 ${p.ubicacion}</span>
+                <span>⏱ ${p.experiencia_anios} años de experiencia</span>
+                <span>📞 ${p.telefono || 'Sin teléfono'}</span>
+            </div>
+            <div style="margin-top: 16px;">
+                <button class="btn btn-primary"
+                        onclick="abrirContacto(${p.id}, '${p.nombre}')">
+                    📩 Contactar
+                </button>
+            </div>
+        </div>
+    `
+})
     }
+    function abrirContacto(id, nombre) {
+        const mensaje = prompt(`Escribí tu mensaje para ${nombre}:`)
+        if (!mensaje) return
+
+        const tuNombre = prompt('Tu nombre:')
+        if (!tuNombre) return
+
+        enviarContacto(id, tuNombre, mensaje)
+}
+
+    async function enviarContacto(profesionalId, nombreContacto, mensaje) {
+    try {
+        const res = await fetch('/api/contacto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                profesional_id: profesionalId,
+                nombre_contacto: nombreContacto,
+                mensaje: mensaje
+            })
+        })
+        const data = await res.json()
+        alert(res.ok ? `✅ ${data.mensaje}` : `❌ ${data.error}`)
+    } catch (err) {
+        alert('Error al enviar el mensaje')
+    }
+}   
 </script>
 {% endblock %}
