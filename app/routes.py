@@ -136,3 +136,8 @@ def detalle_profesional(id):
     """Página de detalle de un profesional."""
     return render_template('detalle.html', profesional_id=id)
 
+@main.route('/contactar/<int:id>')
+def contactar_page(id):
+    """Página de formulario de contacto."""
+    return render_template('contactar.html', profesional_id=id)
+

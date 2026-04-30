@@ -19,7 +19,6 @@
 <script src="{{ url_for('static', filename='js/api.js') }}"></script>
 <script>
     const profesionalId = {{ profesional_id }}
-
     async function cargarDetalle() {
         try {
             const p = await API.getProfesional(profesionalId)
@@ -43,6 +42,11 @@
                                 border-top: 1px solid #eee">
                         <h3 style="margin-bottom: 12px">Contacto</h3>
                         <p>📞 ${p.telefono || 'No disponible'}</p>
+                        <div style="margin-top: 16px">
+                            <a href="/contactar/${p.id}" class="btn btn-primary">
+                                📬 Contactar profesional
+                            </a>
+                        </div>
                     </div>
 
                     <div style="margin-top: 16px">
