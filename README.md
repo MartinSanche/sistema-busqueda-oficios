@@ -43,31 +43,40 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 ### 6. Ejecutar la aplicación
 - python run.py
 
-## 🔗 Rutas disponibles
-
-### Páginas
-| Ruta | Descripción |
-|------|-------------|
-| `/` | Página principal |
-
-### API
-| Ruta | Descripción |
-|------|-------------|
-| `/api/status` | Estado de la API |
-| `/api/oficios` | Lista todos los oficios |
-| `/api/profesionales` | Lista todos los profesionales |
-| `/api/buscar?oficio=X&ubicacion=Y` | Busca profesionales |
 
 ## 📅 Estado del proyecto
 - [x] Etapa 1: Configuración del entorno
 - [x] Etapa 2: Backend básico con Flask
 - [x] Etapa 3: Base de datos con SQLAlchemy
 - [x] Etapa 4: Frontend básico
-- [ ] Etapa 5: Integración frontend-backend
-- [ ] Etapa 6: Funcionalidades principales
+- [x] Etapa 5: Integración frontend-backend
+- [x] Etapa 6: Funcionalidades principales
 - [ ] Etapa 7: Autenticación
 - [ ] Etapa 8: Mejora de UI/UX
 - [ ] Etapa 9: Deploy
+
+## 🔗 Rutas disponibles
+
+### Páginas
+| Ruta | Descripción |
+|------|-------------|
+| `/` | Página principal |
+| `/buscar` | Buscar profesionales |
+| `/profesional/<id>` | Perfil del profesional |
+| `/contactar/<id>` | Contactar profesional |
+| `/registro` | Registro de usuarios |
+
+### API
+| Ruta | Método | Descripción |
+|------|--------|-------------|
+| `/api/status` | GET | Estado de la API |
+| `/api/oficios` | GET | Lista todos los oficios |
+| `/api/profesionales` | GET | Lista profesionales |
+| `/api/buscar` | GET | Busca por oficio/ubicación |
+| `/api/profesional/<id>` | GET | Detalle de profesional |
+| `/api/profesional/<id>/valorar` | POST | Valorar profesional |
+| `/api/registro` | POST | Registrar usuario |
+| `/api/contacto` | POST | Contactar profesional |
 
 ## 📁 Estructura del proyecto
 sistema-busqueda-oficios/
