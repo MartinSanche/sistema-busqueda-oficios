@@ -4,11 +4,10 @@
 
 {% block content %}
 <section class="section">
-    <a href="/buscar" class="btn btn-secondary" 
+    <a href="/buscar" class="btn btn-secondary"
        style="margin-bottom: 24px; display: inline-block">
         ← Volver a búsqueda
     </a>
-
     <div id="detalle-container">
         <p class="loading">⏳ Cargando perfil...</p>
     </div>
@@ -19,6 +18,7 @@
 <script src="{{ url_for('static', filename='js/api.js') }}"></script>
 <script>
     const profesionalId = {{ profesional_id }}
+
     async function cargarDetalle() {
         try {
             const p = await API.getProfesional(profesionalId)
@@ -38,7 +38,7 @@
                         <span>⏱ ${p.experiencia_anios} años de experiencia</span>
                     </div>
 
-                    <div style="margin-top: 24px; padding-top: 24px; 
+                    <div style="margin-top: 24px; padding-top: 24px;
                                 border-top: 1px solid #eee">
                         <h3 style="margin-bottom: 12px">Contacto</h3>
                         <p>📞 ${p.telefono || 'No disponible'}</p>
@@ -54,10 +54,51 @@
                             ${p.disponible ? '✅ Disponible' : '❌ No disponible'}
                         </span>
                     </div>
+
+                    <div style="margin-top: 24px; padding-top: 24px;
+                                border-top: 1px solid #eee">
+                        <h3 style="margin-bottom: 8px">⭐ Valoración</h3>
+                        <p style="font-size: 1.3rem; margin-bottom: 16px">
+                            ${p.valoracion > 0
+                                ? '⭐'.repeat(Math.round(p.valoracion)) +
+                                  ` (${p.valoracion}/5 — ${p.total_valoraciones} valoraciones)`
+                                : 'Sin valoraciones aún'}
+                        </p>
+                        <p style="margin-bottom: 8px; color: #888">
+                            Dejá tu valoración:
+                        </p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                            ${[1,2,3,4,5].map(n => `
+                                <button onclick="valorar(${p.id}, ${n})"
+                                    class="btn btn-secondary"
+                                    style="padding: 6px 14px; font-size: 1rem">
+                                    ${'⭐'.repeat(n)}
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div id="msg-valoracion" style="margin-top: 12px"></div>
+                    </div>
                 </div>
             `
         } catch (error) {
             mostrarError('detalle-container', 'No se encontró el profesional')
+        }
+    }
+
+    async function valorar(id, puntuacion) {
+        try {
+            const response = await fetch(`/api/profesional/${id}/valorar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ puntuacion })
+            })
+            const data = await response.json()
+            document.getElementById('msg-valoracion').innerHTML =
+                `<p style="color: #4caf50">✅ ${data.mensaje}</p>`
+            setTimeout(() => cargarDetalle(), 1500)
+        } catch (error) {
+            document.getElementById('msg-valoracion').innerHTML =
+                `<p style="color: #f44336">❌ Error al valorar</p>`
         }
     }
 
