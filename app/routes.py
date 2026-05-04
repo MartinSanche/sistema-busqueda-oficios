@@ -193,4 +193,3 @@ def valorar_profesional(id):
     db.session.commit()
 
     return jsonify({'mensaje': 'Valoración guardada correctamente'}), 201
-
