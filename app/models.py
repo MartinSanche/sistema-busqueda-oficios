@@ -74,17 +74,53 @@ class Profesional(db.Model):
     experiencia_anios = db.Column(db.Integer, default=0)
     disponible       = db.Column(db.Boolean, default=True)
 
+    valoraciones = db.relationship('Valoracion', backref='profesional', lazy=True)
+
+    def promedio_valoraciones(self):
+        if not self.valoraciones:
+            return 0
+        return round(sum(v.puntuacion for v in self.valoraciones) / len(self.valoraciones), 1)
+
     def to_dict(self):
         return {
-            'id':               self.id,
-            'nombre':           self.usuario.nombre,
-            'oficio':           self.oficio.nombre,
-            'descripcion':      self.descripcion,
-            'ubicacion':        self.ubicacion,
-            'telefono':         self.telefono,
-            'experiencia_anios': self.experiencia_anios,
-            'disponible':       self.disponible
+            'id':                 self.id,
+            'nombre':             self.usuario.nombre,
+            'oficio':             self.oficio.nombre,
+            'descripcion':        self.descripcion,
+            'ubicacion':          self.ubicacion,
+            'telefono':           self.telefono,
+            'experiencia_anios':  self.experiencia_anios,
+            'disponible':         self.disponible,
+            'valoracion':         self.promedio_valoraciones(),
+            'total_valoraciones': len(self.valoraciones)
         }
 
     def __repr__(self):
         return f'<Profesional {self.usuario_id}>'
+    
+    
+    
+    
+    
+class Valoracion(db.Model):
+    """Tabla de valoraciones de profesionales."""
+
+    __tablename__ = 'valoraciones'
+
+    id             = db.Column(db.Integer, primary_key=True)
+    profesional_id = db.Column(db.Integer, db.ForeignKey('profesionales.id'), nullable=False)
+    puntuacion     = db.Column(db.Integer, nullable=False)  # 1 a 5
+    comentario     = db.Column(db.String(500))
+    fecha          = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id':             self.id,
+            'profesional_id': self.profesional_id,
+            'puntuacion':     self.puntuacion,
+            'comentario':     self.comentario,
+            'fecha':          self.fecha.strftime('%Y-%m-%d')
+        }
+
+    def __repr__(self):
+        return f'<Valoracion {self.puntuacion}>'

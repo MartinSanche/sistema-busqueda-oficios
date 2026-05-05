@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Contactar Profesional — Búsqueda de Oficios{% endblock %}
+
+{% block content %}
+<section class="section">
+    <a href="/profesional/{{ profesional_id }}" class="btn btn-secondary"
+       style="margin-bottom: 24px; display: inline-block">
+        ← Volver al perfil
+    </a>
+
+    <h2>📬 Contactar profesional</h2>
+
+    <div class="search-box" style="max-width: 560px; margin-top: 24px;">
+        <div id="mensaje-resultado"></div>
+
+        <div class="field" style="margin-bottom: 16px;">
+            <label for="nombre-contacto">Tu nombre</label>
+            <input type="text" id="nombre-contacto" placeholder="Ej: Ana Torres">
+        </div>
+
+        <div class="field" style="margin-bottom: 16px;">
+            <label for="telefono-contacto">Tu teléfono (opcional)</label>
+            <input type="text" id="telefono-contacto" placeholder="Ej: 011-1234-5678">
+        </div>
+
+        <div class="field" style="margin-bottom: 24px;">
+            <label for="mensaje">Mensaje</label>
+            <textarea
+                id="mensaje"
+                rows="4"
+                placeholder="Describí brevemente qué necesitás..."
+                style="width: 100%; padding: 10px 14px; border: 1px solid #ddd;
+                       border-radius: 8px; font-size: 1rem; font-family: inherit;
+                       resize: vertical; outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='#3498db'"
+                onblur="this.style.borderColor='#ddd'"
+            ></textarea>
+        </div>
+
+        <button class="btn btn-primary" onclick="enviarContacto()">
+            📨 Enviar mensaje
+        </button>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const profesionalId = {{ profesional_id }}
+
+    async function enviarContacto() {
+        const nombre   = document.getElementById('nombre-contacto').value.trim()
+        const telefono = document.getElementById('telefono-contacto').value.trim()
+        const mensaje  = document.getElementById('mensaje').value.trim()
+
+        if (!nombre || !mensaje) {
+            mostrarMensaje('Por favor completá tu nombre y el mensaje', 'error')
+            return
+        }
+
+        const btn = document.querySelector('.btn-primary')
+        btn.disabled = true
+        btn.textContent = 'Enviando...'
+
+        try {
+            const res = await fetch('/api/contacto', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    profesional_id:  profesionalId,
+                    nombre_contacto: nombre,
+                    telefono_contacto: telefono,
+                    mensaje:         mensaje
+                })
+            })
+            const data = await res.json()
+
+            if (res.ok) {
+                mostrarMensaje(`✅ ${data.mensaje}`, 'exito')
+                document.getElementById('nombre-contacto').value = ''
+                document.getElementById('telefono-contacto').value = ''
+                document.getElementById('mensaje').value = ''
+                btn.textContent = '✅ Enviado'
+            } else {
+                mostrarMensaje(`❌ ${data.error}`, 'error')
+                btn.disabled = false
+                btn.textContent = '📨 Enviar mensaje'
+            }
+        } catch (err) {
+            mostrarMensaje('Error al conectar con el servidor', 'error')
+            btn.disabled = false
+            btn.textContent = '📨 Enviar mensaje'
+        }
+    }
+
+    function mostrarMensaje(texto, tipo) {
+        const div = document.getElementById('mensaje-resultado')
+        const color = tipo === 'exito' ? '#27ae60' : '#e74c3c'
+        div.innerHTML = `
+            <p style="color: ${color}; padding: 12px; border-radius: 8px;
+                       background: ${color}20; margin-bottom: 16px;">
+                ${texto}
+            </p>`
+    }
+</script>
+{% endblock %}

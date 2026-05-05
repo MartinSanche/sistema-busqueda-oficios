@@ -71,7 +71,7 @@ def buscar_page():
     """Página de búsqueda."""
     return render_template('buscar.html')
 
-<<<<<<< HEAD
+
 from werkzeug.security import generate_password_hash
 
 @main.route('/api/registro', methods=['POST'])
@@ -123,7 +123,7 @@ def contactar_profesional():
 @main.route('/registro')
 def registro_page():
     return render_template('registro.html')    
-=======
+
 @main.route('/api/profesional/<int:id>')
 def obtener_profesional(id):
     """Obtiene el detalle de un profesional por ID."""
@@ -135,4 +135,61 @@ def obtener_profesional(id):
 def detalle_profesional(id):
     """Página de detalle de un profesional."""
     return render_template('detalle.html', profesional_id=id)
->>>>>>> b14491c7d5687efa2b1c03061fc8fce23788bf96
+
+@main.route('/contactar/<int:id>')
+def contactar_page(id):
+    """Página de formulario de contacto."""
+    return render_template('contactar.html', profesional_id=id)
+
+@main.route('/api/profesionales/filtrar')
+def filtrar_profesionales():
+    """Filtra profesionales por múltiples criterios."""
+    oficio      = request.args.get('oficio', '')
+    ubicacion   = request.args.get('ubicacion', '')
+    experiencia = request.args.get('experiencia', 0, type=int)
+    disponible  = request.args.get('disponible', 'true') == 'true'
+
+    query = Profesional.query.filter_by(disponible=disponible)
+
+    if oficio:
+        query = query.join(Oficio).filter(
+            Oficio.nombre.ilike(f'%{oficio}%')
+        )
+    if ubicacion:
+        query = query.filter(
+            Profesional.ubicacion.ilike(f'%{ubicacion}%')
+        )
+    if experiencia:
+        query = query.filter(
+            Profesional.experiencia_anios >= experiencia
+        )
+
+    resultados = query.all()
+    return jsonify({
+        'resultados': [p.to_dict() for p in resultados],
+        'total':      len(resultados)
+    })
+
+
+@main.route('/api/profesional/<int:id>/valorar', methods=['POST'])
+def valorar_profesional(id):
+    """Agrega una valoración a un profesional."""
+    from app.models import Valoracion
+    data = request.get_json()
+
+    if not data or 'puntuacion' not in data:
+        return jsonify({'error': 'Puntuación requerida'}), 400
+
+    puntuacion = data.get('puntuacion')
+    if not 1 <= puntuacion <= 5:
+        return jsonify({'error': 'Puntuación debe ser entre 1 y 5'}), 400
+
+    valoracion = Valoracion(
+        profesional_id=id,
+        puntuacion=puntuacion,
+        comentario=data.get('comentario', '')
+    )
+    db.session.add(valoracion)
+    db.session.commit()
+
+    return jsonify({'mensaje': 'Valoración guardada correctamente'}), 201

@@ -3,6 +3,10 @@
 {% block title %}Buscar — Búsqueda de Oficios{% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4e99b81a4b974942d12e79e877587bd1156795a6
 <section class="section">
     <h2>🔍 Buscar profesionales</h2>
 
@@ -11,6 +15,7 @@
         <div class="search-fields">
             <div class="field">
                 <label for="oficio">Oficio</label>
+<<<<<<< HEAD
                 <input type="text" id="oficio"
                     placeholder="Ej: Plomero, Electricista...">
             </div>
@@ -30,6 +35,21 @@
                     <option value="5">5+ años</option>
                     <option value="10">10+ años</option>
                 </select>
+=======
+                <input
+                    type="text"
+                    id="oficio"
+                    placeholder="Ej: Plomero, Electricista..."
+                >
+            </div>
+            <div class="field">
+                <label for="ubicacion">Ubicación</label>
+                <input
+                    type="text"
+                    id="ubicacion"
+                    placeholder="Ej: Buenos Aires, Córdoba..."
+                >
+>>>>>>> 4e99b81a4b974942d12e79e877587bd1156795a6
             </div>
             <button class="btn btn-primary" onclick="buscar()">
                 🔍 Buscar
@@ -38,10 +58,18 @@
     </div>
 
     <!-- RESULTADOS -->
+<<<<<<< HEAD
     <div id="resultados">
         <p class="hint">Ingresá un oficio o ubicación para buscar profesionales</p>
     </div>
 </section>
+=======
+    <div id="resultados" class="resultados">
+        <p class="hint">Ingresá un oficio o ubicación para buscar profesionales</p>
+    </div>
+</section>
+
+>>>>>>> 4e99b81a4b974942d12e79e877587bd1156795a6
 {% endblock %}
 
 {% block scripts %}
