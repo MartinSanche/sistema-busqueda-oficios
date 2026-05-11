@@ -3,19 +3,22 @@
 {% block title %}Buscar — Búsqueda de Oficios{% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
-=======
 
->>>>>>> 4e99b81a4b974942d12e79e877587bd1156795a6
+
+
+
+
+
+
 <section class="section">
     <h2>🔍 Buscar profesionales</h2>
 
-    <!-- FORMULARIO DE BÚSQUEDA -->
     <div class="search-box">
         <div class="search-fields">
             <div class="field">
                 <label for="oficio">Oficio</label>
-<<<<<<< HEAD
+
+
                 <input type="text" id="oficio"
                     placeholder="Ej: Plomero, Electricista...">
             </div>
@@ -35,7 +38,7 @@
                     <option value="5">5+ años</option>
                     <option value="10">10+ años</option>
                 </select>
-=======
+
                 <input
                     type="text"
                     id="oficio"
@@ -49,7 +52,28 @@
                     id="ubicacion"
                     placeholder="Ej: Buenos Aires, Córdoba..."
                 >
->>>>>>> 4e99b81a4b974942d12e79e877587bd1156795a6
+
+
+                <input type="text" id="oficio"
+                    placeholder="Ej: Plomero, Electricista...">
+            </div>
+            <div class="field">
+                <label for="ubicacion">Ubicación</label>
+                <input type="text" id="ubicacion"
+                    placeholder="Ej: Buenos Aires, Córdoba...">
+            </div>
+            <div class="field" style="max-width: 180px">
+                <label for="experiencia">Experiencia mínima</label>
+                <select id="experiencia" style="width:100%; padding: 10px 14px;
+                    border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
+                    background: white; color: #333">
+                    <option value="0">Cualquiera</option>
+                    <option value="1">1+ años</option>
+                    <option value="3">3+ años</option>
+                    <option value="5">5+ años</option>
+                    <option value="10">10+ años</option>
+                </select>
+
             </div>
             <button class="btn btn-primary" onclick="buscar()">
                 🔍 Buscar
@@ -57,19 +81,26 @@
         </div>
     </div>
 
+
     <!-- RESULTADOS -->
-<<<<<<< HEAD
+
     <div id="resultados">
         <p class="hint">Ingresá un oficio o ubicación para buscar profesionales</p>
     </div>
 </section>
-=======
+
     <div id="resultados" class="resultados">
         <p class="hint">Ingresá un oficio o ubicación para buscar profesionales</p>
     </div>
 </section>
 
->>>>>>> 4e99b81a4b974942d12e79e877587bd1156795a6
+
+
+    <div id="resultados">
+        <p class="hint">Ingresá un oficio o ubicación para buscar profesionales</p>
+    </div>
+</section>
+
 {% endblock %}
 
 {% block scripts %}

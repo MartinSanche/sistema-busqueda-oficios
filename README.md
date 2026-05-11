@@ -43,18 +43,6 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 ### 6. Ejecutar la aplicación
 - python run.py
 
-
-## 📅 Estado del proyecto
-- [x] Etapa 1: Configuración del entorno
-- [x] Etapa 2: Backend básico con Flask
-- [x] Etapa 3: Base de datos con SQLAlchemy
-- [x] Etapa 4: Frontend básico
-- [x] Etapa 5: Integración frontend-backend
-- [x] Etapa 6: Funcionalidades principales
-- [ ] Etapa 7: Autenticación
-- [ ] Etapa 8: Mejora de UI/UX
-- [ ] Etapa 9: Deploy
-
 ## 🔗 Rutas disponibles
 
 ### Páginas
@@ -72,11 +60,23 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 | `/api/status` | GET | Estado de la API |
 | `/api/oficios` | GET | Lista todos los oficios |
 | `/api/profesionales` | GET | Lista profesionales |
+| `/api/profesionales/filtrar` | GET | Filtrar por oficio/ubicacion/experiencia |
 | `/api/buscar` | GET | Busca por oficio/ubicación |
 | `/api/profesional/<id>` | GET | Detalle de profesional |
 | `/api/profesional/<id>/valorar` | POST | Valorar profesional |
 | `/api/registro` | POST | Registrar usuario |
 | `/api/contacto` | POST | Contactar profesional |
+
+## 📅 Estado del proyecto
+- [x] Etapa 1: Configuración del entorno
+- [x] Etapa 2: Backend básico con Flask
+- [x] Etapa 3: Base de datos con SQLAlchemy
+- [x] Etapa 4: Frontend básico
+- [x] Etapa 5: Integración frontend-backend
+- [x] Etapa 6: Funcionalidades principales
+- [ ] Etapa 7: Autenticación
+- [ ] Etapa 8: Mejora de UI/UX
+- [ ] Etapa 9: Deploy
 
 ## 📁 Estructura del proyecto
 sistema-busqueda-oficios/
