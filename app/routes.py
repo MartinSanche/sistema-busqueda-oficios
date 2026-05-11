@@ -1,4 +1,6 @@
 # app/routes.py
+from flask import redirect
+from flask_login import login_user, logout_user, login_required, current_user
 from flask import Blueprint, jsonify, render_template, request 
 from app import db
 from app.models import Oficio, Usuario, Profesional
@@ -193,3 +195,58 @@ def valorar_profesional(id):
     db.session.commit()
 
     return jsonify({'mensaje': 'Valoración guardada correctamente'}), 201
+
+@main.route('/login')
+def login_page():
+    """Página de login."""
+    if current_user.is_authenticated:
+        return redirect('/')
+    return render_template('login.html')
+
+
+@main.route('/api/login', methods=['POST'])
+def login():
+    """Inicia sesión."""
+    from flask import redirect
+    data = request.get_json()
+
+    if not data or not all(k in data for k in ['email', 'password']):
+        return jsonify({'error': 'Email y contraseña requeridos'}), 400
+
+    usuario = Usuario.query.filter_by(email=data['email']).first()
+
+    if not usuario or not usuario.check_password(data['password']):
+        return jsonify({'error': 'Email o contraseña incorrectos'}), 401
+
+    if not usuario.activo:
+        return jsonify({'error': 'Cuenta desactivada'}), 401
+
+    login_user(usuario, remember=data.get('remember', False))
+
+    return jsonify({
+        'mensaje': f'Bienvenido/a, {usuario.nombre}!',
+        'usuario': usuario.to_dict()
+    })
+
+
+@main.route('/api/logout', methods=['POST'])
+@login_required
+def logout():
+    """Cierra sesión."""
+    logout_user()
+    return jsonify({'mensaje': 'Sesión cerrada correctamente'})
+
+
+@main.route('/api/me')
+def me():
+    """Devuelve el usuario logueado o null."""
+    if current_user.is_authenticated:
+        return jsonify({'usuario': current_user.to_dict()})
+    return jsonify({'usuario': None})
+
+
+@main.route('/mi-perfil')
+@login_required
+def mi_perfil():
+    """Página del perfil del usuario logueado."""
+    return render_template('mi_perfil.html')
