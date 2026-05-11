@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Mi Perfil — Búsqueda de Oficios{% endblock %}
+
+{% block content %}
+<section class="section">
+    <h2>👤 Mi Perfil</h2>
+
+    <div class="card-profesional" style="max-width: 600px">
+        <div class="prof-header">
+            <h3>{{ current_user.nombre }}</h3>
+            {% if current_user.es_profesional %}
+                <span class="badge">Profesional</span>
+            {% else %}
+                <span class="badge" style="background: #27ae60">Usuario</span>
+            {% endif %}
+        </div>
+
+        <div class="prof-info" style="margin-top: 16px; font-size: 1rem">
+            <span>📧 {{ current_user.email }}</span>
+            <span>📅 Miembro desde {{ current_user.fecha_registro.strftime('%d/%m/%Y') }}</span>
+        </div>
+
+        {% if current_user.es_profesional and current_user.perfil %}
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #eee">
+            <h3 style="margin-bottom: 12px">Mi perfil profesional</h3>
+            <p>🔧 {{ current_user.perfil.oficio.nombre }}</p>
+            <p>📍 {{ current_user.perfil.ubicacion }}</p>
+            <p>⏱ {{ current_user.perfil.experiencia_anios }} años de experiencia</p>
+        </div>
+        {% endif %}
+
+        <div style="margin-top: 24px">
+            <button class="btn btn-secondary" onclick="cerrarSesion()">
+                🚪 Cerrar sesión
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function cerrarSesion() {
+        try {
+            const res = await fetch('/api/logout', { method: 'POST' })
+            if (res.ok) {
+                window.location.href = '/'
+            }
+        } catch (err) {
+            alert('Error al cerrar sesión')
+        }
+    }
+</script>
+{% endblock %}
