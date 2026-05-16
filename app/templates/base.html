@@ -11,10 +11,16 @@
     <!-- NAVEGACIÓN -->
     <nav class="navbar">
         <div class="container">
-            <a href="/" class="navbar-brand">Búsqueda de Oficios</a>
+            <a href="/" class="navbar-brand">🔧 Búsqueda de Oficios</a>
             <ul class="navbar-menu">
-                <li><a href="/">Inicio</a></li>
+                <li><a href="/">Inicio</a></li>                
                 <li><a href="/buscar">Buscar</a></li>
+                {% if current_user.is_authenticated %}
+                    <li><a href="/mi-perfil">👤 {{ current_user.nombre }}</a></li>
+                {% else %}
+                    <li><a href="/login">Ingresar</a></li>
+                    <li><a href="/registro">Registrarse</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
@@ -38,4 +44,3 @@
     {% block scripts %}{% endblock %}
 </body>
 </html>
-<li><a href="/registro">Registrarse</a></li>

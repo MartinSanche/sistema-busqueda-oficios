@@ -1,4 +1,6 @@
 # app/routes.py
+from flask import redirect
+from flask_login import login_user, logout_user, login_required, current_user
 from flask import Blueprint, jsonify, render_template, request 
 from app import db
 from app.models import Oficio, Usuario, Profesional
@@ -71,6 +73,9 @@ def buscar_page():
     """Página de búsqueda."""
     return render_template('buscar.html')
 
+
+
+
 from werkzeug.security import generate_password_hash
 
 @main.route('/api/registro', methods=['POST'])
@@ -121,6 +126,7 @@ def contactar_profesional():
 @main.route('/registro')
 def registro_page():
     return render_template('registro.html')    
+
 @main.route('/api/profesional/<int:id>')
 def obtener_profesional(id):
     """Obtiene el detalle de un profesional por ID."""
@@ -132,6 +138,7 @@ def obtener_profesional(id):
 def detalle_profesional(id):
     """Página de detalle de un profesional."""
     return render_template('detalle.html', profesional_id=id)
+
 
 {% extends 'base.html' %}
 
@@ -266,3 +273,117 @@ def detalle_profesional(id):
     })
 </script>
 {% endblock %}
+
+@main.route('/contactar/<int:id>')
+def contactar_page(id):
+    """Página de formulario de contacto."""
+    return render_template('contactar.html', profesional_id=id)
+
+@main.route('/api/profesionales/filtrar')
+def filtrar_profesionales():
+    """Filtra profesionales por múltiples criterios."""
+    oficio      = request.args.get('oficio', '')
+    ubicacion   = request.args.get('ubicacion', '')
+    experiencia = request.args.get('experiencia', 0, type=int)
+    disponible  = request.args.get('disponible', 'true') == 'true'
+
+    query = Profesional.query.filter_by(disponible=disponible)
+
+    if oficio:
+        query = query.join(Oficio).filter(
+            Oficio.nombre.ilike(f'%{oficio}%')
+        )
+    if ubicacion:
+        query = query.filter(
+            Profesional.ubicacion.ilike(f'%{ubicacion}%')
+        )
+    if experiencia:
+        query = query.filter(
+            Profesional.experiencia_anios >= experiencia
+        )
+
+    resultados = query.all()
+    return jsonify({
+        'resultados': [p.to_dict() for p in resultados],
+        'total':      len(resultados)
+    })
+
+
+@main.route('/api/profesional/<int:id>/valorar', methods=['POST'])
+def valorar_profesional(id):
+    """Agrega una valoración a un profesional."""
+    from app.models import Valoracion
+    data = request.get_json()
+
+    if not data or 'puntuacion' not in data:
+        return jsonify({'error': 'Puntuación requerida'}), 400
+
+    puntuacion = data.get('puntuacion')
+    if not 1 <= puntuacion <= 5:
+        return jsonify({'error': 'Puntuación debe ser entre 1 y 5'}), 400
+
+    valoracion = Valoracion(
+        profesional_id=id,
+        puntuacion=puntuacion,
+        comentario=data.get('comentario', '')
+    )
+    db.session.add(valoracion)
+    db.session.commit()
+
+    return jsonify({'mensaje': 'Valoración guardada correctamente'}), 201
+
+@main.route('/login')
+def login_page():
+    """Página de login."""
+    if current_user.is_authenticated:
+        return redirect('/')
+    return render_template('login.html')
+
+
+@main.route('/api/login', methods=['POST'])
+def login():
+    """Inicia sesión."""
+    from flask import redirect
+    data = request.get_json()
+
+    if not data or not all(k in data for k in ['email', 'password']):
+        return jsonify({'error': 'Email y contraseña requeridos'}), 400
+
+    usuario = Usuario.query.filter_by(email=data['email']).first()
+
+    if not usuario or not usuario.check_password(data['password']):
+        return jsonify({'error': 'Email o contraseña incorrectos'}), 401
+
+    if not usuario.activo:
+        return jsonify({'error': 'Cuenta desactivada'}), 401
+
+    login_user(usuario, remember=data.get('remember', False))
+
+    return jsonify({
+        'mensaje': f'Bienvenido/a, {usuario.nombre}!',
+        'usuario': usuario.to_dict()
+    })
+
+
+@main.route('/api/logout', methods=['POST'])
+@login_required
+def logout():
+    """Cierra sesión."""
+    logout_user()
+    return jsonify({'mensaje': 'Sesión cerrada correctamente'})
+
+
+@main.route('/api/me')
+def me():
+    """Devuelve el usuario logueado o null."""
+    if current_user.is_authenticated:
+        return jsonify({'usuario': current_user.to_dict()})
+    return jsonify({'usuario': None})
+
+
+@main.route('/mi-perfil')
+@login_required
+def mi_perfil():
+    """Página del perfil del usuario logueado."""
+    return render_template('mi_perfil.html')
+

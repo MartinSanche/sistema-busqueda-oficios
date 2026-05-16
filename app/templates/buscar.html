@@ -3,46 +3,48 @@
 {% block title %}Buscar — Búsqueda de Oficios{% endblock %}
 
 {% block content %}
-
 <section class="section">
-    <h2>Buscar profesionales</h2>
+    <h2>🔍 Buscar profesionales</h2>
 
-    <!-- FORMULARIO DE BÚSQUEDA -->
     <div class="search-box">
         <div class="search-fields">
             <div class="field">
                 <label for="oficio">Oficio</label>
-                <input
-                    type="text"
-                    id="oficio"
-                    placeholder="Ej: Plomero, Electricista..."
-                >
+                <input type="text" id="oficio"
+                    placeholder="Ej: Plomero, Electricista...">
             </div>
             <div class="field">
                 <label for="ubicacion">Ubicación</label>
-                <input
-                    type="text"
-                    id="ubicacion"
-                    placeholder="Ej: Buenos Aires, Córdoba..."
-                >
+                <input type="text" id="ubicacion"
+                    placeholder="Ej: Buenos Aires, Córdoba...">
+            </div>
+            <div class="field" style="max-width: 180px">
+                <label for="experiencia">Experiencia mínima</label>
+                <select id="experiencia" style="width:100%; padding: 10px 14px;
+                    border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
+                    background: white; color: #333">
+                    <option value="0">Cualquiera</option>
+                    <option value="1">1+ años</option>
+                    <option value="3">3+ años</option>
+                    <option value="5">5+ años</option>
+                    <option value="10">10+ años</option>
+                </select>
             </div>
             <button class="btn btn-primary" onclick="buscar()">
-                Buscar
+                🔍 Buscar
             </button>
         </div>
     </div>
 
-    <!-- RESULTADOS -->
-    <div id="resultados" class="resultados">
+    <div id="resultados">
         <p class="hint">Ingresá un oficio o ubicación para buscar profesionales</p>
     </div>
 </section>
-
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
 <script>
-    // Leer parámetros de la URL al cargar la página
     window.onload = function() {
         const params = new URLSearchParams(window.location.search)
         const oficio = params.get('oficio')
@@ -52,87 +54,78 @@
         }
     }
 
-    function buscar() {
-        const oficio    = document.getElementById('oficio').value
-        const ubicacion = document.getElementById('ubicacion').value
+    async function buscar() {
+        const oficio      = document.getElementById('oficio').value.trim()
+        const ubicacion   = document.getElementById('ubicacion').value.trim()
+        const experiencia = document.getElementById('experiencia').value
 
         if (!oficio && !ubicacion) {
-            document.getElementById('resultados').innerHTML =
-                '<p class="hint">Ingresá al menos un criterio de búsqueda</p>'
+            mostrarVacio('resultados', 'Ingresá al menos un criterio de búsqueda')
             return
         }
 
-        // Mostrar loading
-        document.getElementById('resultados').innerHTML =
-            '<p class="loading">Buscando...</p>'
+        mostrarLoading('resultados', 'Buscando profesionales...')
 
-        // Llamar a la API
-        fetch(`/api/buscar?oficio=${oficio}&ubicacion=${ubicacion}`)
-            .then(res => res.json())
-            .then(data => mostrarResultados(data))
-            .catch(err => console.error('Error:', err))
+        try {
+            const params = new URLSearchParams()
+            if (oficio)      params.append('oficio', oficio)
+            if (ubicacion)   params.append('ubicacion', ubicacion)
+            if (experiencia) params.append('experiencia', experiencia)
+
+            const response = await fetch(`/api/profesionales/filtrar?${params}`)
+            const data = await response.json()
+            mostrarResultados(data)
+        } catch (error) {
+            mostrarError('resultados', 'Error al buscar. Intentá de nuevo.')
+        }
     }
 
     function mostrarResultados(data) {
         const div = document.getElementById('resultados')
 
         if (data.total === 0) {
-            div.innerHTML = '<p class="hint">No se encontraron profesionales</p>'
+            mostrarVacio('resultados', '😕 No se encontraron profesionales')
             return
         }
 
-        div.innerHTML = `<p class="total">Se encontraron <strong>${data.total}</strong> profesionales</p>`
-
-
+        div.innerHTML = `
+            <p class="total">
+                Se encontraron <strong>${data.total}</strong> profesionales
+            </p>
+        `
         data.resultados.forEach(p => {
             div.innerHTML += `
                 <div class="card-profesional">
-                <div class="prof-header">
-                    <h3>${p.nombre}</h3>
-                    <span class="badge">${p.oficio}</span>
-            </div>
-            <p>${p.descripcion || 'Sin descripción'}</p>
-            <div class="prof-info">
-                <span>📍 ${p.ubicacion}</span>
-                <span>⏱ ${p.experiencia_anios} años de experiencia</span>
-                <span>📞 ${p.telefono || 'Sin teléfono'}</span>
-            </div>
-            <div style="margin-top: 16px;">
-                <button class="btn btn-primary"
-                        onclick="abrirContacto(${p.id}, '${p.nombre}')">
-                    📩 Contactar
-                </button>
-            </div>
-        </div>
-    `
-})
+                    <div class="prof-header">
+                        <h3>${p.nombre}</h3>
+                        <span class="badge">${p.oficio}</span>
+                    </div>
+                    <p>${p.descripcion || 'Sin descripción'}</p>
+                    <div class="prof-info">
+                        <span>📍 ${p.ubicacion}</span>
+                        <span>⏱ ${p.experiencia_anios} años de experiencia</span>
+                        <span>📞 ${p.telefono || 'Sin teléfono'}</span>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px">
+                        <a href="/profesional/${p.id}" class="btn btn-secondary">
+                            Ver perfil
+                        </a>
+                        <a href="/contactar/${p.id}" class="btn btn-primary"
+                           style="font-size: 0.9rem; padding: 8px 18px">
+                            📬 Contactar
+                        </a>
+                    </div>
+                </div>
+            `
+        })
     }
-    function abrirContacto(id, nombre) {
-        const mensaje = prompt(`Escribí tu mensaje para ${nombre}:`)
-        if (!mensaje) return
 
-        const tuNombre = prompt('Tu nombre:')
-        if (!tuNombre) return
-
-        enviarContacto(id, tuNombre, mensaje)
-}
-
-    async function enviarContacto(profesionalId, nombreContacto, mensaje) {
-    try {
-        const res = await fetch('/api/contacto', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                profesional_id: profesionalId,
-                nombre_contacto: nombreContacto,
-                mensaje: mensaje
+    document.addEventListener('DOMContentLoaded', () => {
+        ['oficio', 'ubicacion'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', e => {
+                if (e.key === 'Enter') buscar()
             })
         })
-        const data = await res.json()
-        alert(res.ok ? `✅ ${data.mensaje}` : `❌ ${data.error}`)
-    } catch (err) {
-        alert('Error al enviar el mensaje')
-    }
-}   
+    })
 </script>
 {% endblock %}
