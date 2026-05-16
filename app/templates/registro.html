@@ -38,9 +38,9 @@
 {% block scripts %}
 <script>
     async function registrar() {
-        const nombre        = document.getElementById('nombre').value.trim()
-        const email         = document.getElementById('email').value.trim()
-        const password      = document.getElementById('password').value
+        const nombre         = document.getElementById('nombre').value.trim()
+        const email          = document.getElementById('email').value.trim()
+        const password       = document.getElementById('password').value
         const es_profesional = document.getElementById('es-profesional').checked
 
         if (!nombre || !email || !password) {
@@ -52,6 +52,10 @@
             return
         }
 
+        const btn = document.querySelector('.btn-primary')
+        btn.disabled = true
+        btn.textContent = 'Creando cuenta...'
+
         try {
             const res = await fetch('/api/registro', {
                 method: 'POST',
@@ -62,14 +66,20 @@
 
             if (res.ok) {
                 mostrarMensaje(`✅ ¡Cuenta creada! Bienvenido/a, ${data.usuario.nombre}`, 'exito')
-                // Limpiar formulario
-                ['nombre', 'email', 'password'].forEach(id =>
-                    document.getElementById(id).value = '')
+                document.getElementById('nombre').value = ''
+                document.getElementById('email').value = ''
+                document.getElementById('password').value = ''
+                btn.textContent = '✅ Cuenta creada'
+                setTimeout(() => window.location.href = '/login', 2000)
             } else {
                 mostrarMensaje(`❌ ${data.error}`, 'error')
+                btn.disabled = false
+                btn.textContent = 'Crear cuenta'
             }
         } catch (err) {
             mostrarMensaje('Error al conectar con el servidor', 'error')
+            btn.disabled = false
+            btn.textContent = 'Crear cuenta'
         }
     }
 
