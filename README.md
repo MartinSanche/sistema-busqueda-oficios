@@ -93,3 +93,41 @@ sistema-busqueda-oficios/
 ├── run.py               ← Punto de entrada
 ├── poblar_db.py         ← Script de datos de prueba
 └── requirements.txt     ← Dependencias
+
+
+## Resumen del proyecto: Sistema de Búsqueda de Oficios
+
+Es una aplicación web desarrollada con **Python + Flask** que conecta personas con profesionales de oficios (plomeros, electricistas, carpinteros, etc.) en su zona.
+
+---
+
+### ¿Qué hace la app?
+
+Funciona como un **directorio de profesionales** donde los usuarios pueden:
+
+- **Buscar** profesionales filtrando por oficio, ubicación y años de experiencia
+- **Ver el perfil** de cada profesional con sus datos de contacto y valoraciones
+- **Contactar** directamente al profesional mediante un formulario
+- **Registrarse** como usuario o como profesional
+- **Valorar** a los profesionales con una puntuación del 1 al 5
+
+---
+
+### Stack tecnológico
+
+- **Backend:** Python 3.11 + Flask, con arquitectura de Blueprint
+- **Base de datos:** SQLite (con posibilidad de migrar a PostgreSQL), gestionada con SQLAlchemy y Flask-Migrate
+- **Frontend:** HTML, CSS y JavaScript vanilla consumiendo una API REST propia
+- **Seguridad:** Hashing de contraseñas con Werkzeug, preparación para autenticación con Flask-Login
+
+---
+
+### Arquitectura del proyecto
+
+El proyecto sigue el patrón **MVC adaptado a Flask**. Los modelos principales son cuatro: `Oficio`, `Usuario`, `Profesional` y `Valoracion`, con relaciones entre ellos. Las rutas están divididas en páginas HTML y endpoints de API REST bajo `/api/`.
+
+---
+
+### Estado actual
+
+Las funcionalidades core están completas. Quedan pendientes autenticación completa, mejoras de UI/UX y el deploy a producción.
