@@ -3,7 +3,7 @@
 
 {% block content %}
 <section class="section" style="max-width:440px; margin:0 auto;">
-    <h2 style="margin-bottom:24px;">🔐 Iniciar Sesión</h2>
+    <h2 style="margin-bottom:24px;">Iniciar Sesión</h2>
 
     <div class="search-box">
         <div id="mensaje-resultado"></div>
@@ -27,7 +27,7 @@
         </div>
 
         <button class="btn btn-primary" onclick="iniciarSesion()" style="width:100%">
-            🔐 Iniciar Sesión
+            Iniciar Sesión
         </button>
 
         <p style="margin-top:16px; font-size:0.85rem; color:#667788; text-align:center;">
@@ -68,12 +68,12 @@
             } else {
                 mostrarMensaje(`❌ ${data.error}`, 'error')
                 btn.disabled = false
-                btn.textContent = '🔐 Iniciar Sesión'
+                btn.textContent = 'Iniciar Sesión'
             }
         } catch (err) {
             mostrarMensaje('Error al conectar con el servidor', 'error')
             btn.disabled = false
-            btn.textContent = '🔐 Iniciar Sesión'
+            btn.textContent = 'Iniciar Sesión'
         }
     }
 
