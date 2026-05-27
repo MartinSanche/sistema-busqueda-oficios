@@ -4,9 +4,27 @@
 
 body {
     font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-    background-color: #f0f2f5;
+    background-image: url('/static/img/hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: #1a2332;
     line-height: 1.6;
+    min-height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(10, 15, 25, 0.85) 0%,
+        rgba(10, 15, 25, 0.75) 50%,
+        rgba(10, 15, 25, 0.90) 100%
+    );
+    z-index: 0;
+    pointer-events: none;
 }
 
 .container {
@@ -23,6 +41,7 @@ body {
     top: 0;
     z-index: 100;
     border-bottom: 1px solid #243040;
+    isolation: isolate;
 }
 
 .navbar .container {
@@ -77,22 +96,6 @@ body {
     min-height: 480px;
     display: flex;
     align-items: center;
-    overflow: hidden;
-}
-
-.hero-bg {
-    position: absolute;
-    inset: 0;
-    background-image: url('/static/img/hero.jpg');
-    background-size: cover;
-    background-position: center;
-    z-index: 0;
-}
-
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to right, rgba(10, 15, 25, 0.836) 30%, rgba(10, 15, 25, 0.11));
     z-index: 1;
 }
 
@@ -166,15 +169,16 @@ body {
 .section-servicios {
     background: linear-gradient(
         to bottom,
-        rgba(240, 242, 245, 0) 0%,
+        rgba(240, 242, 245, 0.055) 0%,
         rgba(240, 242, 245, 0.5) 15%,
         rgba(240, 242, 245, 0.95) 40%
-    );
+    );  
     padding: 8px 0 32px 0;
     margin-top: -40px;
 }
 
 .section-header { text-align: center; margin-bottom: 32px; }
+
 .section-header h2 {
     font-size: 1.6rem;
     font-weight: 600;
@@ -200,7 +204,7 @@ body {
     border-radius: 12px;
     height: 180px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     text-decoration: none;
     background: linear-gradient(135deg, #1a2332 0%, #243040 100%);
     border: 1px solid #2c3e50;
@@ -211,9 +215,9 @@ body {
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
-    border-color: #3a5f8a;
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 16px 40px rgba(44, 111, 173, 0.3);
+    border-color: #7eb3e8;
 }
 
 .card-body { text-align: center; padding: 20px; }
@@ -251,19 +255,19 @@ body {
 .section h2 {
     font-size: 1.5rem;
     margin-bottom: 24px;
-    color: #1a2332;
+    color: #e0e8f0;
     font-weight: 600;
 }
 
 /* BÚSQUEDA */
 
 .search-box {
-    background: white;
+    background: rgba(10, 15, 25, 0.4);
     padding: 28px;
     border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     margin-bottom: 32px;
-    border: 1px solid #e8ecf0;
+    backdrop-filter: blur(6px);
 }
 
 .search-fields {
@@ -279,38 +283,52 @@ body {
     display: block;
     font-weight: 500;
     margin-bottom: 6px;
-    color: #445566;
+    color: #c0d0e0;
     font-size: 0.85rem;
 }
 
-.field input, .field select {
+.field input {
     width: 100%;
     padding: 10px 14px;
-    border: 1px solid #dde3ea;
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 8px;
     font-size: 0.95rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     font-family: 'Inter', sans-serif;
-    background: white;
-    color: #1a2332;
+    background: rgba(255,255,255,0.08);
+    color: #e0e8f0;
 }
 
-.field input:focus, .field select:focus {
-    border-color: #2c6fad;
-    box-shadow: 0 0 0 3px rgba(44,111,173,0.12);
+.field select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: 'Inter', sans-serif;
+    background: #1a2332;
+    color: #e0e8f0;
+}
+
+.field select option {
+    background: #1a2332;
+    color: #e0e8f0;
 }
 
 /* CARD PROFESIONAL */
 .card-profesional {
-    background: white;
+    background: rgba(255, 255, 255, 0.92);
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 16px;
-    border: 1px solid #e8ecf0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
     transition: box-shadow 0.2s;
     animation: fadeInUp 0.3s ease forwards;
+    backdrop-filter: blur(8px);
 }
 
 .card-profesional:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
@@ -357,6 +375,8 @@ body {
 .main-content {
     min-height: calc(100vh - 130px);
     padding: 40px 0;
+    position: relative;
+    z-index: 1;
 }
 
 .footer {
@@ -366,6 +386,8 @@ body {
     padding: 20px 0;
     font-size: 0.85rem;
     border-top: 1px solid #243040;
+    position: relative;
+    z-index: 1;
 }
 
 /* ESTADOS */
