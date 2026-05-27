@@ -5,38 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Sistema de Búsqueda de Oficios{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 <body>
-
-    <!-- NAVEGACIÓN -->
     <nav class="navbar">
         <div class="container">
-            <a href="/" class="navbar-brand">🔧 Búsqueda de Oficios</a>
+            <a href="/" class="navbar-brand">
+                <div class="navbar-brand-icon">🔧</div>
+                Búsqueda de Oficios
+            </a>
             <ul class="navbar-menu">
-                <li><a href="/">Inicio</a></li>                
+                <li><a href="/">Inicio</a></li>
                 <li><a href="/buscar">Buscar</a></li>
                 {% if current_user.is_authenticated %}
-                    <li><a href="/mi-perfil">👤 {{ current_user.nombre }}</a></li>
+                    <li><a href="/mi-perfil" class="btn-nav-primary">
+                        👤 {{ current_user.nombre }}
+                    </a></li>
                 {% else %}
                     <li><a href="/login">Ingresar</a></li>
-                    <li><a href="/registro">Registrarse</a></li>
+                    <li><a href="/registro" class="btn-nav-primary">Registrarse</a></li>
                 {% endif %}
             </ul>
         </div>
     </nav>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
         <div class="container">
-            {% block content %}
-            {% endblock %}
+            {% block content %}{% endblock %}
         </div>
     </main>
 
-    <!-- PIE DE PÁGINA -->
     <footer class="footer">
         <div class="container">
-            <p>Sistema de Búsqueda de Oficios — 2026</p>
+            <p>🔧 Sistema de Búsqueda de Oficios — 2026</p>
         </div>
     </footer>
 
