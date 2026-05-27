@@ -74,8 +74,8 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 - [x] Etapa 4: Frontend básico
 - [x] Etapa 5: Integración frontend-backend
 - [x] Etapa 6: Funcionalidades principales
-- [ ] Etapa 7: Autenticación
-- [ ] Etapa 8: Mejora de UI/UX
+- [x] Etapa 7: Autenticación
+- [en desdarrollo] Etapa 8: Mejora de UI/UX
 - [ ] Etapa 9: Deploy
 
 ## 📁 Estructura del proyecto
