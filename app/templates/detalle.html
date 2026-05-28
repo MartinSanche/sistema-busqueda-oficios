@@ -25,58 +25,59 @@
             document.getElementById('detalle-container').innerHTML = `
                 <div class="card-profesional">
                     <div class="prof-header">
-                        <h2>${p.nombre}</h2>
+                        <h2 style="color:#e0e8f0;">${p.nombre}</h2>
                         <span class="badge">${p.oficio}</span>
                     </div>
 
-                    <p style="margin: 16px 0; font-size: 1.05rem">
+                    <p style="color:#8899aa; margin:16px 0; font-size:1rem;">
                         ${p.descripcion || 'Sin descripción'}
                     </p>
 
-                    <div class="prof-info" style="font-size: 1rem">
-                        <span>📍 ${p.ubicacion}</span>
-                        <span>⏱ ${p.experiencia_anios} años de experiencia</span>
+                    <div class="prof-info">
+                        <span style="color:#c0d0e0;">📍 ${p.ubicacion}</span>
+                        <span style="color:#c0d0e0;">⏱ ${p.experiencia_anios} años de experiencia</span>
                     </div>
 
-                    <div style="margin-top: 24px; padding-top: 24px;
-                                border-top: 1px solid #eee">
-                        <h3 style="margin-bottom: 12px">Contacto</h3>
-                        <p>📞 ${p.telefono || 'No disponible'}</p>
-                        <div style="margin-top: 16px">
+                    <div style="margin-top:24px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.1);">
+                        <h3 style="color:#e0e8f0; margin-bottom:12px;">Contacto</h3>
+                        <p style="color:#c0d0e0;">📞 ${p.telefono || 'No disponible'}</p>
+                        <div style="margin-top:16px;">
                             <a href="/contactar/${p.id}" class="btn btn-primary">
-                                📬 Contactar profesional
+                                Contactar profesional
                             </a>
                         </div>
                     </div>
 
-                    <div style="margin-top: 16px">
+                    <div style="margin-top:16px;">
                         <span class="${p.disponible ? 'badge' : 'badge badge-inactive'}">
                             ${p.disponible ? '✅ Disponible' : '❌ No disponible'}
                         </span>
                     </div>
 
-                    <div style="margin-top: 24px; padding-top: 24px;
-                                border-top: 1px solid #eee">
-                        <h3 style="margin-bottom: 8px">⭐ Valoración</h3>
-                        <p style="font-size: 1.3rem; margin-bottom: 16px">
+                    <div style="margin-top:24px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.1);">
+                        <h3 style="color:#e0e8f0; margin-bottom:8px;">★ Valoración</h3>
+                        <p style="font-size:1.2rem; margin-bottom:16px; color:#c0d0e0;">
                             ${p.valoracion > 0
-                                ? '⭐'.repeat(Math.round(p.valoracion)) +
-                                  ` (${p.valoracion}/5 — ${p.total_valoraciones} valoraciones)`
-                                : 'Sin valoraciones aún'}
+                                ? '★'.repeat(Math.round(p.valoracion)) +
+                                ` <span style="color:#8899aa; font-size:0.9rem;">(${p.valoracion}/5 — ${p.total_valoraciones} valoraciones)</span>`
+                                : '<span style="color:#8899aa;">Sin valoraciones aún</span>'}
                         </p>
-                        <p style="margin-bottom: 8px; color: #888">
+                        <p style="margin-bottom:10px; color:#8899aa; font-size:0.9rem;">
                             Dejá tu valoración:
                         </p>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
                             ${[1,2,3,4,5].map(n => `
                                 <button onclick="valorar(${p.id}, ${n})"
-                                    class="btn btn-secondary"
-                                    style="padding: 6px 14px; font-size: 1rem">
-                                    ${'⭐'.repeat(n)}
+                                    style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.25);
+                                        padding:6px 14px; border-radius:8px; cursor:pointer; font-size:1rem;
+                                        transition:all 0.2s;"
+                                    onmouseover="this.style.borderColor='#7eb3e8'; this.style.background='rgba(126,179,232,0.1)'"
+                                    onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'; this.style.background='transparent'">
+                                    ${'★'.repeat(n)}
                                 </button>
                             `).join('')}
                         </div>
-                        <div id="msg-valoracion" style="margin-top: 12px"></div>
+                        <div id="msg-valoracion" style="margin-top:12px;"></div>
                     </div>
                 </div>
             `
