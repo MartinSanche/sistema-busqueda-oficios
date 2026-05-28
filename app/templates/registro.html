@@ -2,12 +2,13 @@
 {% block title %}Registro — Búsqueda de Oficios{% endblock %}
 
 {% block content %}
-<section class="section" style="max-width:480px; margin:0 auto;">
-    <h2 style="margin-bottom:24px;">Crear cuenta</h2>
+<section class="section" style="max-width:520px; margin:0 auto;">
+    <h2 style="margin-bottom:24px;">📝 Crear cuenta</h2>
 
     <div class="search-box">
         <div id="mensaje-resultado"></div>
 
+        <!-- DATOS BÁSICOS -->
         <div class="field" style="margin-bottom:16px;">
             <label for="nombre">Nombre completo</label>
             <input type="text" id="nombre" placeholder="Ej: Juan Pérez">
@@ -20,16 +21,60 @@
             <label for="password">Contraseña</label>
             <input type="password" id="password" placeholder="Mínimo 6 caracteres">
         </div>
-        <div class="field" style="margin-bottom:24px;">
+
+        <!-- CHECKBOX PROFESIONAL -->
+        <div class="field" style="margin-bottom:16px;">
             <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#c0d0e0; font-size:0.85rem;">
-                <input type="checkbox" id="es-profesional" style="width:16px; height:16px; cursor:pointer; accent-color:#2c6fad; flex-shrink:0;">
+                <input type="checkbox" id="es-profesional"
+                       style="width:16px; height:16px; cursor:pointer; accent-color:#2c6fad; flex-shrink:0;"
+                       onchange="toggleCampoProfesional()">
                 Quiero registrarme como profesional
             </label>
+        </div>
+
+        <!-- CAMPOS PROFESIONAL (ocultos por defecto) -->
+        <div id="campos-profesional" style="display:none; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px; margin-bottom:16px;">
+            <p style="color:#7eb3e8; font-size:0.85rem; margin-bottom:16px;">
+                🔧 Completá tu perfil profesional
+            </p>
+
+            <div class="field" style="margin-bottom:16px;">
+                <label for="oficio_id">Oficio *</label>
+                <select id="oficio_id">
+                    <option value="">Seleccioná un oficio...</option>
+                </select>
+            </div>
+
+            <div class="field" style="margin-bottom:16px;">
+                <label for="ubicacion">Ubicación *</label>
+                <input type="text" id="ubicacion" placeholder="Ej: Buenos Aires">
+            </div>
+
+            <div class="field" style="margin-bottom:16px;">
+                <label for="telefono">WhatsApp / Teléfono *</label>
+                <input type="text" id="telefono" placeholder="Ej: 1123456789">
+            </div>
+
+            <div class="field" style="margin-bottom:16px;">
+                <label for="experiencia_anios">Años de experiencia</label>
+                <input type="number" id="experiencia_anios" placeholder="Ej: 5" min="0" max="50">
+            </div>
+
+            <div class="field" style="margin-bottom:16px;">
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" rows="3"
+                    placeholder="Contá tu experiencia y especialidades..."
+                    style="width:100%; padding:10px 14px; border:1px solid rgba(255,255,255,0.2);
+                           border-radius:8px; font-size:0.95rem; font-family:'Inter',sans-serif;
+                           background:rgba(255,255,255,0.08); color:#e0e8f0; resize:vertical; outline:none;">
+                </textarea>
+            </div>
         </div>
 
         <button class="btn btn-primary" onclick="registrar()" style="width:100%">
             Crear cuenta
         </button>
+
         <p style="margin-top:16px; font-size:0.85rem; color:#667788; text-align:center;">
             ¿Ya tenés cuenta? <a href="/login" style="color:#2c6fad;">Iniciá sesión</a>
         </p>
@@ -39,6 +84,27 @@
 
 {% block scripts %}
 <script>
+    // Cargar oficios en el select
+    async function cargarOficios() {
+        try {
+            const res = await fetch('/api/oficios')
+            const data = await res.json()
+            const select = document.getElementById('oficio_id')
+            data.oficios.forEach(o => {
+                select.innerHTML += `<option value="${o.id}">${o.icono} ${o.nombre}</option>`
+            })
+        } catch (e) {
+            console.error('Error cargando oficios:', e)
+        }
+    }
+
+    // Mostrar/ocultar campos profesional
+    function toggleCampoProfesional() {
+        const checked = document.getElementById('es-profesional').checked
+        const campos  = document.getElementById('campos-profesional')
+        campos.style.display = checked ? 'block' : 'none'
+    }
+
     async function registrar() {
         const nombre         = document.getElementById('nombre').value.trim()
         const email          = document.getElementById('email').value.trim()
@@ -54,23 +120,42 @@
             return
         }
 
+        // Validar campos profesional
+        if (es_profesional) {
+            const oficio_id = document.getElementById('oficio_id').value
+            const ubicacion = document.getElementById('ubicacion').value.trim()
+            const telefono  = document.getElementById('telefono').value.trim()
+            if (!oficio_id || !ubicacion || !telefono) {
+                mostrarMensaje('Completá oficio, ubicación y teléfono', 'error')
+                return
+            }
+        }
+
         const btn = document.querySelector('.btn-primary')
         btn.disabled = true
         btn.textContent = 'Creando cuenta...'
 
         try {
+            // Armar datos
+            const datos = { nombre, email, password, es_profesional }
+
+            if (es_profesional) {
+                datos.oficio_id        = parseInt(document.getElementById('oficio_id').value)
+                datos.ubicacion        = document.getElementById('ubicacion').value.trim()
+                datos.telefono         = document.getElementById('telefono').value.trim()
+                datos.experiencia_anios = parseInt(document.getElementById('experiencia_anios').value) || 0
+                datos.descripcion      = document.getElementById('descripcion').value.trim()
+            }
+
             const res = await fetch('/api/registro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, email, password, es_profesional })
+                body: JSON.stringify(datos)
             })
             const data = await res.json()
 
             if (res.ok) {
                 mostrarMensaje(`✅ ¡Cuenta creada! Bienvenido/a, ${data.usuario.nombre}`, 'exito')
-                document.getElementById('nombre').value = ''
-                document.getElementById('email').value = ''
-                document.getElementById('password').value = ''
                 btn.textContent = '✅ Cuenta creada'
                 setTimeout(() => window.location.href = '/login', 2000)
             } else {
@@ -94,5 +179,7 @@
                 ${texto}
             </p>`
     }
+
+    cargarOficios()
 </script>
 {% endblock %}

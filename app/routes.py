@@ -80,7 +80,7 @@ from werkzeug.security import generate_password_hash
 
 @main.route('/api/registro', methods=['POST'])
 def registro():
-    """Registra un nuevo usuario."""
+    """Registra un nuevo usuario y opcionalmente su perfil profesional."""
     data = request.get_json()
 
     if not data or not all(k in data for k in ['nombre', 'email', 'password']):
@@ -89,14 +89,33 @@ def registro():
     if Usuario.query.filter_by(email=data['email']).first():
         return jsonify({'error': 'El email ya está registrado'}), 409
 
+    # Validar campos profesional si aplica
+    if data.get('es_profesional'):
+        if not all(k in data for k in ['oficio_id', 'ubicacion', 'telefono']):
+            return jsonify({'error': 'Faltan campos del perfil profesional'}), 400
+
+    # Crear usuario
     nuevo_usuario = Usuario(
         nombre=data['nombre'],
         email=data['email'],
         es_profesional=data.get('es_profesional', False)
     )
     nuevo_usuario.set_password(data['password'])
-
     db.session.add(nuevo_usuario)
+    db.session.flush()  # Obtener ID sin commitear
+
+    # Crear perfil profesional si aplica
+    if data.get('es_profesional'):
+        profesional = Profesional(
+            usuario_id=nuevo_usuario.id,
+            oficio_id=data['oficio_id'],
+            ubicacion=data['ubicacion'],
+            telefono=data['telefono'],
+            experiencia_anios=data.get('experiencia_anios', 0),
+            descripcion=data.get('descripcion', '')
+        )
+        db.session.add(profesional)
+
     db.session.commit()
 
     return jsonify({
@@ -254,3 +273,23 @@ def mi_perfil():
     """Página del perfil del usuario logueado."""
     return render_template('mi_perfil.html')
 
+@main.route('/api/perfil/actualizar', methods=['POST'])
+@login_required
+def actualizar_perfil():
+    """Actualiza el perfil profesional del usuario logueado."""
+    data = request.get_json()
+
+    if not current_user.perfil:
+        return jsonify({'error': 'No tenés un perfil profesional'}), 404
+
+    if not data.get('ubicacion') or not data.get('telefono'):
+        return jsonify({'error': 'Ubicación y teléfono son obligatorios'}), 400
+
+    current_user.perfil.ubicacion         = data['ubicacion']
+    current_user.perfil.telefono          = data['telefono']
+    current_user.perfil.experiencia_anios = data.get('experiencia_anios', 0)
+    current_user.perfil.descripcion       = data.get('descripcion', '')
+
+    db.session.commit()
+
+    return jsonify({'mensaje': 'Perfil actualizado correctamente'})
