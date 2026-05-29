@@ -96,7 +96,7 @@ def registro():
 
     # Crear usuario
     nuevo_usuario = Usuario(
-        nombre=data['nombre'],
+        nombre=data['nombre'].title(),
         email=data['email'],
         es_profesional=data.get('es_profesional', False)
     )
