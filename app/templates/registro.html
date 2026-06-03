@@ -2,81 +2,78 @@
 {% block title %}Registro — Búsqueda de Oficios{% endblock %}
 
 {% block content %}
-<section class="section" style="max-width:520px; margin:0 auto;">
-    <h2 style="margin-bottom:24px;">📝 Crear cuenta</h2>
+<section class="section section-narrow">
+    <h2>📝 Crear cuenta</h2>
 
     <div class="search-box">
         <div id="mensaje-resultado"></div>
 
         <!-- DATOS BÁSICOS -->
-        <div class="field" style="margin-bottom:16px;">
+        <div class="field field-mb">
             <label for="nombre">Nombre completo</label>
             <input type="text" id="nombre" placeholder="Ej: Juan Pérez">
         </div>
-        <div class="field" style="margin-bottom:16px;">
+
+        <div class="field field-mb">
             <label for="email">Email</label>
             <input type="email" id="email" placeholder="tu@email.com">
         </div>
-        <div class="field" style="margin-bottom:16px;">
+
+        <div class="field field-mb">
             <label for="password">Contraseña</label>
             <input type="password" id="password" placeholder="Mínimo 6 caracteres">
         </div>
 
         <!-- CHECKBOX PROFESIONAL -->
-        <div class="field" style="margin-bottom:16px;">
-            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#c0d0e0; font-size:0.85rem;">
+        <div class="field field-mb">
+            <label class="field-checkbox">
                 <input type="checkbox" id="es-profesional"
-                       style="width:16px; height:16px; cursor:pointer; accent-color:#2c6fad; flex-shrink:0;"
                        onchange="toggleCampoProfesional()">
                 Quiero registrarme como profesional
             </label>
         </div>
 
         <!-- CAMPOS PROFESIONAL (ocultos por defecto) -->
-        <div id="campos-profesional" style="display:none; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px; margin-bottom:16px;">
-            <p style="color:#7eb3e8; font-size:0.85rem; margin-bottom:16px;">
-                🔧 Completá tu perfil profesional
-            </p>
+        <div id="campos-profesional" class="form-divider" style="display:none;">
 
-            <div class="field" style="margin-bottom:16px;">
+            <p class="form-hint">🔧 Completá tu perfil profesional</p>
+
+            <div class="field field-mb">
                 <label for="oficio_id">Oficio *</label>
                 <select id="oficio_id">
                     <option value="">Seleccioná un oficio...</option>
                 </select>
             </div>
 
-            <div class="field" style="margin-bottom:16px;">
+            <div class="field field-mb">
                 <label for="ubicacion">Ubicación *</label>
                 <input type="text" id="ubicacion" placeholder="Ej: Buenos Aires">
             </div>
 
-            <div class="field" style="margin-bottom:16px;">
+            <div class="field field-mb">
                 <label for="telefono">WhatsApp / Teléfono *</label>
                 <input type="text" id="telefono" placeholder="Ej: 1123456789">
             </div>
 
-            <div class="field" style="margin-bottom:16px;">
+            <div class="field field-mb">
                 <label for="experiencia_anios">Años de experiencia</label>
                 <input type="number" id="experiencia_anios" placeholder="Ej: 5" min="0" max="50">
             </div>
 
-            <div class="field" style="margin-bottom:16px;">
+            <div class="field field-mb">
                 <label for="descripcion">Descripción</label>
                 <textarea id="descripcion" rows="3"
-                    placeholder="Contá tu experiencia y especialidades..."
-                    style="width:100%; padding:10px 14px; border:1px solid rgba(255,255,255,0.2);
-                           border-radius:8px; font-size:0.95rem; font-family:'Inter',sans-serif;
-                           background:rgba(255,255,255,0.08); color:#e0e8f0; resize:vertical; outline:none;">
+                    placeholder="Contá tu experiencia y especialidades...">
                 </textarea>
             </div>
         </div>
 
-        <button class="btn btn-primary" onclick="registrar()" style="width:100%">
+        <button class="btn btn-primary btn-full" onclick="registrar()">
             Crear cuenta
         </button>
 
-        <p style="margin-top:16px; font-size:0.85rem; color:#667788; text-align:center;">
-            ¿Ya tenés cuenta? <a href="/login" style="color:#2c6fad;">Iniciá sesión</a>
+        <p class="form-footer">
+            ¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a>
         </p>
     </div>
 </section>
@@ -84,10 +81,9 @@
 
 {% block scripts %}
 <script>
-    // Cargar oficios en el select
     async function cargarOficios() {
         try {
-            const res = await fetch('/api/oficios')
+            const res  = await fetch('/api/oficios')
             const data = await res.json()
             const select = document.getElementById('oficio_id')
             data.oficios.forEach(o => {
@@ -98,7 +94,6 @@
         }
     }
 
-    // Mostrar/ocultar campos profesional
     function toggleCampoProfesional() {
         const checked = document.getElementById('es-profesional').checked
         const campos  = document.getElementById('campos-profesional')
@@ -120,7 +115,6 @@
             return
         }
 
-        // Validar campos profesional
         if (es_profesional) {
             const oficio_id = document.getElementById('oficio_id').value
             const ubicacion = document.getElementById('ubicacion').value.trim()
@@ -136,18 +130,17 @@
         btn.textContent = 'Creando cuenta...'
 
         try {
-            // Armar datos
             const datos = { nombre, email, password, es_profesional }
 
             if (es_profesional) {
-                datos.oficio_id        = parseInt(document.getElementById('oficio_id').value)
-                datos.ubicacion        = document.getElementById('ubicacion').value.trim()
-                datos.telefono         = document.getElementById('telefono').value.trim()
+                datos.oficio_id         = parseInt(document.getElementById('oficio_id').value)
+                datos.ubicacion         = document.getElementById('ubicacion').value.trim()
+                datos.telefono          = document.getElementById('telefono').value.trim()
                 datos.experiencia_anios = parseInt(document.getElementById('experiencia_anios').value) || 0
-                datos.descripcion      = document.getElementById('descripcion').value.trim()
+                datos.descripcion       = document.getElementById('descripcion').value.trim()
             }
 
-            const res = await fetch('/api/registro', {
+            const res  = await fetch('/api/registro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
@@ -172,12 +165,7 @@
 
     function mostrarMensaje(texto, tipo) {
         const div = document.getElementById('mensaje-resultado')
-        const color = tipo === 'exito' ? '#27ae60' : '#e74c3c'
-        div.innerHTML = `
-            <p style="color:${color}; padding:12px; border-radius:8px;
-                      background:${color}20; margin-bottom:16px; font-size:0.9rem;">
-                ${texto}
-            </p>`
+        div.innerHTML = `<div class="form-message form-message-${tipo}">${texto}</div>`
     }
 
     cargarOficios()

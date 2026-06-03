@@ -2,37 +2,37 @@
 {% block title %}Iniciar Sesión — Búsqueda de Oficios{% endblock %}
 
 {% block content %}
-<section class="section" style="max-width:440px; margin:0 auto;">
-    <h2 style="margin-bottom:24px;">Iniciar Sesión</h2>
+<section class="section section-narrow" style="max-width:440px;">
+    <h2>Iniciar Sesión</h2>
 
     <div class="search-box">
         <div id="mensaje-resultado"></div>
 
-        <div class="field" style="margin-bottom:16px;">
+        <div class="field field-mb">
             <label for="email">Email</label>
             <input type="email" id="email" placeholder="tu@email.com">
         </div>
 
-        <div class="field" style="margin-bottom:16px;">
+        <div class="field field-mb">
             <label for="password">Contraseña</label>
             <input type="password" id="password" placeholder="Tu contraseña"
                    onkeypress="if(event.key==='Enter') iniciarSesion()">
         </div>
 
-        <div class="field" style="margin-bottom:24px;">
-            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#c0d0e0; font-size:0.85rem;">
-                <input type="checkbox" id="remember" style="width:16px; height:16px; cursor:pointer; accent-color:#2c6fad;">
+        <div class="field field-mb-lg">
+            <label class="field-checkbox">
+                <input type="checkbox" id="remember">
                 Recordarme
             </label>
         </div>
 
-        <button class="btn btn-primary" onclick="iniciarSesion()" style="width:100%">
+        <button class="btn btn-primary btn-full" onclick="iniciarSesion()">
             Iniciar Sesión
         </button>
 
-        <p style="margin-top:16px; font-size:0.85rem; color:#667788; text-align:center;">
+        <p class="form-footer">
             ¿No tenés cuenta?
-            <a href="/registro" style="color:#2c6fad;">Registrate acá</a>
+            <a href="/registro">Registrate acá</a>
         </p>
     </div>
 </section>
@@ -79,12 +79,7 @@
 
     function mostrarMensaje(texto, tipo) {
         const div = document.getElementById('mensaje-resultado')
-        const color = tipo === 'exito' ? '#27ae60' : '#e74c3c'
-        div.innerHTML = `
-            <p style="color:${color}; padding:12px; border-radius:8px;
-                      background:${color}20; margin-bottom:16px; font-size:0.9rem;">
-                ${texto}
-            </p>`
+        div.innerHTML = `<div class="form-message form-message-${tipo}">${texto}</div>`
     }
 </script>
 {% endblock %}
