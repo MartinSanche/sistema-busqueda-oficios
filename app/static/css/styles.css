@@ -216,6 +216,10 @@ body::before {
     max-width: 1100px;
     margin: 0 auto;
     padding: 60px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Etiqueta pequeña sobre el título */
@@ -235,6 +239,7 @@ body::before {
     margin-bottom: 16px;
     line-height: 1.25;
     max-width: 520px;
+    text-align: center;
 }
 
 /* Subtítulo del hero */
@@ -243,6 +248,7 @@ body::before {
     color: #8899aa;
     margin-bottom: 32px;
     max-width: 480px;
+    text-align: center;
 }
 
 /* Contenedor de botones del hero */
@@ -250,6 +256,7 @@ body::before {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 /* ============================================================
@@ -309,6 +316,7 @@ body::before {
     margin-bottom: 24px;
     color: #e0e8f0;
     font-weight: 600;
+    text-align: center;
 }
 
 /* Sección centrada con ancho máximo — login, registro */
@@ -921,4 +929,23 @@ body::before {
 .valoracion-mensaje-error {
     color: #f44336;
     margin-top: 12px;
+}
+
+/* Centrado de formularios en páginas internas */
+.section-narrow,
+.section-medium {
+    text-align: center;
+}
+
+/* Los inputs y selects no se centran — solo el texto */
+.section-narrow .search-box,
+.section-medium .search-box {
+    text-align: left;
+}
+
+/* Títulos de secciones internas centrados */
+.section-narrow h2,
+.section-medium h2 {
+    text-align: center;
+    margin-bottom: 24px;
 }
