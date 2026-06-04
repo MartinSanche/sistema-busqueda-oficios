@@ -884,3 +884,41 @@ body::before {
     background: #1fb855;
     opacity: 1;
 }
+
+/* Botón volver — espaciado inferior */
+.btn-volver {
+    display: inline-block;
+    margin-bottom: 24px;
+}
+
+/* Valoración — promedio con estrellas */
+.valoracion-promedio {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    color: #c0d0e0;
+}
+
+/* Detalle del promedio — cantidad de valoraciones */
+.valoracion-detalle {
+    color: #8899aa;
+    font-size: 0.9rem;
+}
+
+/* Label "Dejá tu valoración" */
+.valoracion-label {
+    margin-bottom: 10px;
+    color: #8899aa;
+    font-size: 0.9rem;
+}
+
+/* Mensaje de éxito al valorar */
+.valoracion-mensaje-ok {
+    color: #4caf50;
+    margin-top: 12px;
+}
+
+/* Mensaje de error al valorar */
+.valoracion-mensaje-error {
+    color: #f44336;
+    margin-top: 12px;
+}
