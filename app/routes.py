@@ -4,9 +4,16 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask import Blueprint, jsonify, render_template, request 
 from app import db
 from app.models import Oficio, Usuario, Profesional
+import re
 
 # Crear el blueprint principal
 main = Blueprint('main', __name__)
+
+# Función para validar formato de email
+def es_email_valido(email):
+    """Valida que el email tenga un formato válido."""
+    patron = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(patron, email) is not None
 
 
 @main.route('/')
@@ -86,7 +93,12 @@ def registro():
     if not data or not all(k in data for k in ['nombre', 'email', 'password']):
         return jsonify({'error': 'Faltan campos requeridos'}), 400
 
-    if Usuario.query.filter_by(email=data['email']).first():
+    email = data['email'].strip()
+    
+    if not es_email_valido(email):
+        return jsonify({'error': 'El email ingresado no tiene un formato válido'}), 400
+
+    if Usuario.query.filter_by(email=email).first():
         return jsonify({'error': 'El email ya está registrado'}), 409
 
     # Validar campos profesional si aplica
@@ -97,7 +109,7 @@ def registro():
     # Crear usuario
     nuevo_usuario = Usuario(
         nombre=data['nombre'].title(),
-        email=data['email'],
+        email=email,
         es_profesional=data.get('es_profesional', False)
     )
     nuevo_usuario.set_password(data['password'])
@@ -235,7 +247,12 @@ def login():
     if not data or not all(k in data for k in ['email', 'password']):
         return jsonify({'error': 'Email y contraseña requeridos'}), 400
 
-    usuario = Usuario.query.filter_by(email=data['email']).first()
+    email = data['email'].strip()
+    
+    if not es_email_valido(email):
+        return jsonify({'error': 'El email ingresado no tiene un formato válido'}), 400
+
+    usuario = Usuario.query.filter_by(email=email).first()
 
     if not usuario or not usuario.check_password(data['password']):
         return jsonify({'error': 'Email o contraseña incorrectos'}), 401

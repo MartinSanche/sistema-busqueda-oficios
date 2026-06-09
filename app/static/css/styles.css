@@ -602,6 +602,52 @@ body::before {
     box-shadow: 0 0 0 3px rgba(44,111,173,0.2);
 }
 
+/* Campo de contraseña con botón toggle */
+.password-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.password-field input {
+    flex: 1;
+    width: 100%;
+}
+
+/* Botón toggle de visibilidad de contraseña */
+.btn-toggle-password {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(126,179,232,0.4);
+    background: rgba(44,111,173,0.15);
+    border-radius: 8px;
+    color: #7eb3e8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.btn-toggle-password:hover {
+    background: rgba(44,111,173,0.25);
+    border-color: rgba(126,179,232,0.6);
+    box-shadow: 0 2px 8px rgba(44,111,173,0.2);
+}
+
+.btn-toggle-password:active {
+    transform: scale(0.95);
+}
+
+.btn-toggle-password i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Separador interno del formulario */
 .form-divider {
     border-top: 1px solid rgba(255,255,255,0.1);

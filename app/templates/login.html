@@ -15,8 +15,13 @@
 
         <div class="field field-mb">
             <label for="password">Contraseña</label>
-            <input type="password" id="password" placeholder="Tu contraseña"
-                   onkeypress="if(event.key==='Enter') iniciarSesion()">
+            <div class="password-field">
+                <input type="password" id="password" placeholder="Tu contraseña"
+                       onkeypress="if(event.key==='Enter') iniciarSesion()">
+                <button type="button" class="btn-toggle-password" onclick="togglePassword('password')">
+                    <i class="ti ti-eye"></i>
+                </button>
+            </div>
         </div>
 
         <div class="field field-mb-lg">
@@ -40,6 +45,27 @@
 
 {% block scripts %}
 <script>
+    function esEmailValido(email) {
+        const patron = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        return patron.test(email)
+    }
+
+    function togglePassword(fieldId) {
+        const campo = document.getElementById(fieldId)
+        const boton = event.target.closest('.btn-toggle-password')
+        const icono = boton.querySelector('i')
+        
+        if (campo.type === 'password') {
+            campo.type = 'text'
+            icono.classList.remove('ti-eye')
+            icono.classList.add('ti-eye-off')
+        } else {
+            campo.type = 'password'
+            icono.classList.remove('ti-eye-off')
+            icono.classList.add('ti-eye')
+        }
+    }
+
     async function iniciarSesion() {
         const email    = document.getElementById('email').value.trim()
         const password = document.getElementById('password').value
@@ -47,6 +73,11 @@
 
         if (!email || !password) {
             mostrarMensaje('Completá email y contraseña', 'error')
+            return
+        }
+
+        if (!esEmailValido(email)) {
+            mostrarMensaje('El email ingresado no tiene un formato válido', 'error')
             return
         }
 
