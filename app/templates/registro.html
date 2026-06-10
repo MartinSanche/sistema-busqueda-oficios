@@ -3,7 +3,7 @@
 
 {% block content %}
 <section class="section section-narrow">
-    <h2>📝 Crear cuenta</h2>
+    <h2>Crear cuenta</h2>
 
     <div class="search-box">
         <div id="mensaje-resultado"></div>
@@ -113,8 +113,8 @@
             const data = await res.json()
             const select = document.getElementById('oficio_id')
             data.oficios.forEach(o => {
-                select.innerHTML += `<option value="${o.id}">${o.icono} ${o.nombre}</option>`
-            })
+            select.innerHTML += `<option value="${o.id}">${o.nombre}</option>`
+        })
         } catch (e) {
             console.error('Error cargando oficios:', e)
         }
