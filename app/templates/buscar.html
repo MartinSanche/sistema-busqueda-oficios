@@ -49,7 +49,7 @@
             const dataOficios = await API.getOficios()
             const selectOficio = document.getElementById('oficio')
             dataOficios.oficios.forEach(o => {
-                selectOficio.innerHTML += `<option value="${o.nombre}">${o.icono} ${o.nombre}</option>`
+                selectOficio.innerHTML += `<option value="${o.nombre}">${o.nombre}</option>`
             })
 
             const dataProfesionales = await fetch('/api/profesionales').then(r => r.json())
