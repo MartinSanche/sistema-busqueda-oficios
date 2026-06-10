@@ -431,12 +431,12 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeInUp 0.3s ease forwards;
+    will-change: transform;
 }
 
 /* Hover: sube, escala y agrega sombra azul */
 .card:hover {
-    transform: translateY(-8px) scale(1.03);
+    transform: translateY(-8px) scale(1.1);
     box-shadow: 0 16px 40px rgba(44, 111, 173, 0.534);
     border-color: #7eb3e8;
 }
