@@ -33,6 +33,7 @@
         <div class="field field-mb">
             <label class="field-checkbox">
                 <input type="checkbox" id="es-profesional"
+                       {% if request.args.get('profesional') == '1' %}checked{% endif %}
                        onchange="toggleCampoProfesional()">
                 Quiero registrarme como profesional
             </label>
@@ -126,6 +127,10 @@
         campos.style.display = checked ? 'block' : 'none'
     }
 
+    function inicializarRegistro() {
+        toggleCampoProfesional()
+    }
+
     async function registrar() {
         const nombre         = document.getElementById('nombre').value.trim()
         const email          = document.getElementById('email').value.trim()
@@ -201,5 +206,6 @@
     }
 
     cargarOficios()
+    inicializarRegistro()
 </script>
 {% endblock %}

@@ -12,17 +12,17 @@
 <!-- HERO -->
 <div class="hero">
     <div class="hero-content hero-layout">
-        <div class="hero-visual">
-            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="OficiosYa" class="hero-logo-large">
-        </div>
         <div class="hero-copy">
             <p class="hero-tag">PLATAFORMA DE OFICIOS</p>
-            <h1><span class="brand-name">Oficios</span><span class="brand-accent">Ya</span></h1>
-            <p>Conectamos personas con <br> profesionales de confianza en tu zona</p>
+            <h1><span class="brand-name">Encontra el profesional que necesitas </span></h1>
+            <p>En OficiosYa conectamos personas con <br> profesionales verificados en tu zona,  en minutos</p>
             <div class="hero-buttons">
-                <a href="/buscar" class="btn btn-primary btn-hero-celeste">Buscar Oficio</a>
-                <a href="/registro" class="btn btn-outline">Registrarse</a>
+                <a href="/buscar" class="btn btn-primary btn-hero-celeste">Buscar  Profesionales</a>
+                <a href="{{ url_for('main.registro_page', profesional=1) }}" class="btn btn-outline">Ofrezcer mis servicios</a>
             </div>
+        </div>
+        <div class="hero-visual">
+            <img src="{{ url_for('static', filename='img/nodehero.png') }}" alt="OficiosYa" class="hero-logo-large">
         </div>
     </div>
 </div>
@@ -31,7 +31,7 @@
 <div class="section-servicios">
     <div class="section-servicios-inner">
         <div class="section-header">
-            <h2>Oficios Disponibles</h2>
+            <h2>Oficios Disponibles </h2>
             <div class="section-divider"></div>
         </div>
         <div class="cards-grid" id="oficios-grid">
