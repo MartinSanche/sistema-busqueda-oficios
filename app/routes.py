@@ -1,20 +1,28 @@
 # app/routes.py
-from flask import redirect
-from flask_login import login_user, logout_user, login_required, current_user
-from flask import Blueprint, jsonify, render_template, request 
-from app import db
-from app.models import Oficio, Usuario, Profesional
 import re
+from flask import Blueprint, jsonify, render_template, request, redirect
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash
+from app import db
+from app.models import Oficio, Usuario, Profesional, Valoracion
 
 # Crear el blueprint principal
 main = Blueprint('main', __name__)
 
-# Función para validar formato de email
+
+# ============================================================
+# UTILIDADES
+# ============================================================
+
 def es_email_valido(email):
     """Valida que el email tenga un formato válido."""
     patron = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(patron, email) is not None
 
+
+# ============================================================
+# PÁGINAS
+# ============================================================
 
 @main.route('/')
 def home():
@@ -22,11 +30,54 @@ def home():
     return render_template('index.html')
 
 
+@main.route('/buscar')
+def buscar_page():
+    """Página de búsqueda de profesionales."""
+    return render_template('buscar.html')
+
+
+@main.route('/profesional/<int:id>')
+def detalle_profesional(id):
+    """Página de detalle de un profesional."""
+    return render_template('detalle.html', profesional_id=id)
+
+
+@main.route('/contactar/<int:id>')
+def contactar_page(id):
+    """Página de formulario de contacto."""
+    return render_template('contactar.html', profesional_id=id)
+
+
+@main.route('/registro')
+def registro_page():
+    """Página de registro de usuarios."""
+    return render_template('registro.html')
+
+
+@main.route('/login')
+def login_page():
+    """Página de login — redirige al inicio si ya está logueado."""
+    if current_user.is_authenticated:
+        return redirect('/')
+    return render_template('login.html')
+
+
+@main.route('/mi-perfil')
+@login_required
+def mi_perfil():
+    """Página del perfil del usuario logueado."""
+    return render_template('mi_perfil.html')
+
+
+# ============================================================
+# API — OFICIOS
+# ============================================================
+
 @main.route('/api/status')
 def status():
-    """Ruta de prueba para verificar que la API funciona."""
+    """Estado de la API — útil para verificar que el servidor está corriendo."""
     return jsonify({
-        'status': 'ok',
+        'status':  'ok',
         'mensaje': 'API del Sistema de Búsqueda de Oficios funcionando',
         'version': '1.0.0'
     })
@@ -34,13 +85,17 @@ def status():
 
 @main.route('/api/oficios')
 def listar_oficios():
-    """Lista todos los oficios desde la base de datos."""
+    """Lista todos los oficios activos."""
     oficios = Oficio.query.filter_by(activo=True).all()
     return jsonify({
         'oficios': [o.to_dict() for o in oficios],
         'total':   len(oficios)
     })
 
+
+# ============================================================
+# API — PROFESIONALES
+# ============================================================
 
 @main.route('/api/profesionales')
 def listar_profesionales():
@@ -52,134 +107,9 @@ def listar_profesionales():
     })
 
 
-@main.route('/api/buscar')
-def buscar():
-    """Busca profesionales por oficio y/o ubicación."""
-    oficio    = request.args.get('oficio', '')
-    ubicacion = request.args.get('ubicacion', '')
-
-    query = Profesional.query.filter_by(disponible=True)
-
-    if oficio:
-        query = query.join(Oficio).filter(
-            Oficio.nombre.ilike(f'%{oficio}%')
-        )
-    if ubicacion:
-        query = query.filter(
-            Profesional.ubicacion.ilike(f'%{ubicacion}%')
-        )
-
-    resultados = query.all()
-    return jsonify({
-        'resultados': [p.to_dict() for p in resultados],
-        'total':      len(resultados)
-    })
-
-@main.route('/buscar')
-def buscar_page():
-    """Página de búsqueda."""
-    return render_template('buscar.html')
-
-
-
-
-from werkzeug.security import generate_password_hash
-
-@main.route('/api/registro', methods=['POST'])
-def registro():
-    """Registra un nuevo usuario y opcionalmente su perfil profesional."""
-    data = request.get_json()
-
-    if not data or not all(k in data for k in ['nombre', 'email', 'password']):
-        return jsonify({'error': 'Faltan campos requeridos'}), 400
-
-    email = data['email'].strip()
-    
-    if not es_email_valido(email):
-        return jsonify({'error': 'El email ingresado no tiene un formato válido'}), 400
-
-    if Usuario.query.filter_by(email=email).first():
-        return jsonify({'error': 'El email ya está registrado'}), 409
-
-    # Validar campos profesional si aplica
-    if data.get('es_profesional'):
-        if not all(k in data for k in ['oficio_id', 'ubicacion', 'telefono']):
-            return jsonify({'error': 'Faltan campos del perfil profesional'}), 400
-
-    # Crear usuario
-    nuevo_usuario = Usuario(
-        nombre=data['nombre'].title(),
-        email=email,
-        es_profesional=data.get('es_profesional', False)
-    )
-    nuevo_usuario.set_password(data['password'])
-    db.session.add(nuevo_usuario)
-    db.session.flush()  # Obtener ID sin commitear
-
-    # Crear perfil profesional si aplica
-    if data.get('es_profesional'):
-        profesional = Profesional(
-            usuario_id=nuevo_usuario.id,
-            oficio_id=data['oficio_id'],
-            ubicacion=data['ubicacion'],
-            telefono=data['telefono'],
-            experiencia_anios=data.get('experiencia_anios', 0),
-            descripcion=data.get('descripcion', '')
-        )
-        db.session.add(profesional)
-
-    db.session.commit()
-
-    return jsonify({
-        'mensaje': 'Usuario registrado exitosamente',
-        'usuario': nuevo_usuario.to_dict()
-    }), 201
-
-
-@main.route('/api/contacto', methods=['POST'])
-def contactar_profesional():
-    """Registra una solicitud de contacto hacia un profesional."""
-    data = request.get_json()
-
-    if not data or not all(k in data for k in ['profesional_id', 'nombre_contacto', 'mensaje']):
-        return jsonify({'error': 'Faltan campos requeridos'}), 400
-
-    profesional = Profesional.query.get(data['profesional_id'])
-    if not profesional:
-        return jsonify({'error': 'Profesional no encontrado'}), 404
-
-    # Por ahora devolvemos éxito (en etapas futuras se puede enviar email)
-    return jsonify({
-        'mensaje': f'Solicitud enviada a {profesional.usuario.nombre}',
-        'profesional': profesional.to_dict()
-    }), 200
-
-@main.route('/registro')
-def registro_page():
-    return render_template('registro.html')    
-
-@main.route('/api/profesional/<int:id>')
-def obtener_profesional(id):
-    """Obtiene el detalle de un profesional por ID."""
-    profesional = Profesional.query.get_or_404(id)
-    return jsonify(profesional.to_dict())
-
-
-@main.route('/profesional/<int:id>')
-def detalle_profesional(id):
-    """Página de detalle de un profesional."""
-    return render_template('detalle.html', profesional_id=id)
-
-
-
-@main.route('/contactar/<int:id>')
-def contactar_page(id):
-    """Página de formulario de contacto."""
-    return render_template('contactar.html', profesional_id=id)
-
 @main.route('/api/profesionales/filtrar')
 def filtrar_profesionales():
-    """Filtra profesionales por múltiples criterios."""
+    """Filtra profesionales por oficio, ubicación y experiencia mínima."""
     oficio      = request.args.get('oficio', '')
     ubicacion   = request.args.get('ubicacion', '')
     experiencia = request.args.get('experiencia', 0, type=int)
@@ -207,10 +137,16 @@ def filtrar_profesionales():
     })
 
 
+@main.route('/api/profesional/<int:id>')
+def obtener_profesional(id):
+    """Obtiene el detalle de un profesional por ID."""
+    profesional = Profesional.query.get_or_404(id)
+    return jsonify(profesional.to_dict())
+
+
 @main.route('/api/profesional/<int:id>/valorar', methods=['POST'])
 def valorar_profesional(id):
-    """Agrega una valoración a un profesional."""
-    from app.models import Valoracion
+    """Agrega una valoración (1-5) a un profesional."""
     data = request.get_json()
 
     if not data or 'puntuacion' not in data:
@@ -230,25 +166,71 @@ def valorar_profesional(id):
 
     return jsonify({'mensaje': 'Valoración guardada correctamente'}), 201
 
-@main.route('/login')
-def login_page():
-    """Página de login."""
-    if current_user.is_authenticated:
-        return redirect('/')
-    return render_template('login.html')
+
+# ============================================================
+# API — USUARIOS Y AUTENTICACIÓN
+# ============================================================
+
+@main.route('/api/registro', methods=['POST'])
+def registro():
+    """Registra un nuevo usuario y opcionalmente su perfil profesional."""
+    data = request.get_json()
+
+    if not data or not all(k in data for k in ['nombre', 'email', 'password']):
+        return jsonify({'error': 'Faltan campos requeridos'}), 400
+
+    email = data['email'].strip()
+
+    if not es_email_valido(email):
+        return jsonify({'error': 'El email ingresado no tiene un formato válido'}), 400
+
+    if Usuario.query.filter_by(email=email).first():
+        return jsonify({'error': 'El email ya está registrado'}), 409
+
+    if data.get('es_profesional'):
+        if not all(k in data for k in ['oficio_id', 'ubicacion', 'telefono']):
+            return jsonify({'error': 'Faltan campos del perfil profesional'}), 400
+
+    # Crear usuario
+    nuevo_usuario = Usuario(
+        nombre=data['nombre'].title(),
+        email=email,
+        es_profesional=data.get('es_profesional', False)
+    )
+    nuevo_usuario.set_password(data['password'])
+    db.session.add(nuevo_usuario)
+    db.session.flush()
+
+    # Crear perfil profesional si aplica
+    if data.get('es_profesional'):
+        profesional = Profesional(
+            usuario_id=nuevo_usuario.id,
+            oficio_id=data['oficio_id'],
+            ubicacion=data['ubicacion'],
+            telefono=data['telefono'],
+            experiencia_anios=data.get('experiencia_anios', 0),
+            descripcion=data.get('descripcion', '')
+        )
+        db.session.add(profesional)
+
+    db.session.commit()
+
+    return jsonify({
+        'mensaje': 'Usuario registrado exitosamente',
+        'usuario': nuevo_usuario.to_dict()
+    }), 201
 
 
 @main.route('/api/login', methods=['POST'])
 def login():
-    """Inicia sesión."""
-    from flask import redirect
+    """Inicia sesión con email y contraseña."""
     data = request.get_json()
 
     if not data or not all(k in data for k in ['email', 'password']):
         return jsonify({'error': 'Email y contraseña requeridos'}), 400
 
     email = data['email'].strip()
-    
+
     if not es_email_valido(email):
         return jsonify({'error': 'El email ingresado no tiene un formato válido'}), 400
 
@@ -271,24 +253,40 @@ def login():
 @main.route('/api/logout', methods=['POST'])
 @login_required
 def logout():
-    """Cierra sesión."""
+    """Cierra la sesión del usuario logueado."""
     logout_user()
     return jsonify({'mensaje': 'Sesión cerrada correctamente'})
 
 
 @main.route('/api/me')
 def me():
-    """Devuelve el usuario logueado o null."""
+    """Devuelve el usuario logueado o null si no hay sesión activa."""
     if current_user.is_authenticated:
         return jsonify({'usuario': current_user.to_dict()})
     return jsonify({'usuario': None})
 
 
-@main.route('/mi-perfil')
-@login_required
-def mi_perfil():
-    """Página del perfil del usuario logueado."""
-    return render_template('mi_perfil.html')
+@main.route('/api/contacto', methods=['POST'])
+def contactar_profesional():
+    """Registra una solicitud de contacto hacia un profesional."""
+    data = request.get_json()
+
+    if not data or not all(k in data for k in ['profesional_id', 'nombre_contacto', 'mensaje']):
+        return jsonify({'error': 'Faltan campos requeridos'}), 400
+
+    profesional = Profesional.query.get(data['profesional_id'])
+    if not profesional:
+        return jsonify({'error': 'Profesional no encontrado'}), 404
+
+    return jsonify({
+        'mensaje':     f'Solicitud enviada a {profesional.usuario.nombre}',
+        'profesional': profesional.to_dict()
+    }), 200
+
+
+# ============================================================
+# API — PERFIL
+# ============================================================
 
 @main.route('/api/perfil/actualizar', methods=['POST'])
 @login_required
