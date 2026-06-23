@@ -75,25 +75,26 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 - [x] Etapa 5: Integración frontend-backend
 - [x] Etapa 6: Funcionalidades principales
 - [x] Etapa 7: Autenticación
-- [en desdarrollo] Etapa 8: Mejora de UI/UX
+- [x] Etapa 8: Mejora de UI/UX
 - [ ] Etapa 9: Deploy
 
 ## 📁 Estructura del proyecto
+```text
 sistema-busqueda-oficios/
 ├── app/
-│   ├── templates/       ← Archivos HTML
-│   ├── static/          ← CSS, JS, imágenes
-│   ├── __init__.py      ← Inicializa Flask y DB
-│   ├── models.py        ← Modelos de base de datos
-│   └── routes.py        ← Rutas y API
-├── migrations/          ← Migraciones de la DB
-├── docs/                ← Documentación
-├── tests/               ← Pruebas
-├── config.py            ← Configuración
-├── run.py               ← Punto de entrada
-├── poblar_db.py         ← Script de datos de prueba
-└── requirements.txt     ← Dependencias
-
+│   ├── templates/        # Archivos HTML
+│   ├── static/           # CSS, JS e imágenes
+│   ├── __init__.py       # Inicializa Flask y DB
+│   ├── models.py         # Modelos de base de datos
+│   └── routes.py         # Rutas y API
+├── migrations/           # Migraciones de la DB
+├── docs/                 # Documentación
+├── tests/                # Pruebas
+├── config.py             # Configuración
+├── run.py                # Punto de entrada
+├── poblar_db.py          # Script de datos de prueba
+└── requirements.txt      # Dependencias
+```
 
 ## Resumen del proyecto: Sistema de Búsqueda de Oficios
 
@@ -107,7 +108,7 @@ Funciona como un **directorio de profesionales** donde los usuarios pueden:
 
 - **Buscar** profesionales filtrando por oficio, ubicación y años de experiencia
 - **Ver el perfil** de cada profesional con sus datos de contacto y valoraciones
-- **Contactar** directamente al profesional mediante un formulario
+- **Contactar** directamente al profesional mediante Whats App
 - **Registrarse** como usuario o como profesional
 - **Valorar** a los profesionales con una puntuación del 1 al 5
 
@@ -126,8 +127,3 @@ Funciona como un **directorio de profesionales** donde los usuarios pueden:
 
 El proyecto sigue el patrón **MVC adaptado a Flask**. Los modelos principales son cuatro: `Oficio`, `Usuario`, `Profesional` y `Valoracion`, con relaciones entre ellos. Las rutas están divididas en páginas HTML y endpoints de API REST bajo `/api/`.
 
----
-
-### Estado actual
-
-Las funcionalidades core están completas. Quedan pendientes autenticación completa, mejoras de UI/UX y el deploy a producción.
