@@ -1,15 +1,15 @@
-# 🔧 Sistema de Búsqueda de Oficios
+# Grupo 10. Sistema de Búsqueda de Oficios
 
 Aplicación web para conectar personas con profesionales de oficios en su área.
 
-## 👥 Equipo
-- Estudiante 1 - Tech Lead
-- Estudiante 2 - Backend Dev
-- Estudiante 3 - Frontend Dev
-- Estudiante 4 - DB Dev
-- Estudiante 5 - QA / Docs
+## Equipo
+- Martin Sanchez - Tech Lead
+- Julian Sanchez - Backend Dev
+- Lucas Oviedo - Frontend Dev
+- Manuel Churquina - DB Dev
+- Franco Gómez - QA / Docs
 
-## 🛠️ Tecnologías
+## Tecnologías
 - Python 3.11+
 - Flask
 - Flask-SQLAlchemy
@@ -17,7 +17,7 @@ Aplicación web para conectar personas con profesionales de oficios en su área.
 - SQLite → PostgreSQL
 - HTML, CSS, JavaScript
 
-## 🚀 Cómo ejecutar el proyecto
+## Cómo ejecutar el proyecto
 
 Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el repositorio y seguir los siguientes comandos.
 
@@ -43,7 +43,7 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 ### 6. Ejecutar la aplicación
 - python run.py
 
-## 🔗 Rutas disponibles
+## Rutas disponibles
 
 ### Páginas
 | Ruta | Descripción |
@@ -67,7 +67,7 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 | `/api/registro` | POST | Registrar usuario |
 | `/api/contacto` | POST | Contactar profesional |
 
-## 📅 Estado del proyecto
+## Estado del proyecto
 - [x] Etapa 1: Configuración del entorno
 - [x] Etapa 2: Backend básico con Flask
 - [x] Etapa 3: Base de datos con SQLAlchemy
@@ -78,7 +78,7 @@ Abrir la terminal Git Bash dentro de la carpeta donde vamos a copiar el reposito
 - [x] Etapa 8: Mejora de UI/UX
 - [ ] Etapa 9: Deploy
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 ```text
 sistema-busqueda-oficios/
 ├── app/
